@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 //暂时不配置数据源 所以必须exclude1,2
 //暂时不配置Mongodb 所以3，4
 @SpringBootApplication(exclude={
-        DataSourceAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class,
+//        DataSourceAutoConfiguration.class,
+//        HibernateJpaAutoConfiguration.class,
 		MongoAutoConfiguration.class,
 		MongoDataAutoConfiguration.class
 })
