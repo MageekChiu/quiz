@@ -74,3 +74,42 @@ Using default security password: 04d83402-ce3d-447a-9285-1c77707a3e66
 2017-10-16 17:22:04.930  INFO 26588 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
 2017-10-16 17:22:04.931  INFO 26588 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
 2017-10-16 17:22:04.943  INFO 26588 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 12 ms
+2017-10-16 17:22:29.962  INFO 27812 --- [restartedMain] cn.mageek.quiz.QuizApplication           : Starting QuizApplication on Qiukang with PID 27812 (F:\workspace\java\quiz\target\classes started by Administrator in F:\workspace\java\quiz)
+2017-10-16 17:22:29.963 DEBUG 27812 --- [restartedMain] cn.mageek.quiz.QuizApplication           : Running with Spring Boot v1.5.7.RELEASE, Spring v4.3.11.RELEASE
+2017-10-16 17:22:29.963  INFO 27812 --- [restartedMain] cn.mageek.quiz.QuizApplication           : The following profiles are active: dev
+2017-10-16 17:22:30.126  INFO 27812 --- [restartedMain] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4e6be8e9: startup date [Mon Oct 16 17:22:30 CST 2017]; root of context hierarchy
+2017-10-16 17:22:30.702  INFO 27812 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2017-10-16 17:22:30.714  INFO 27812 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2017-10-16 17:22:30.981  INFO 27812 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$98e48739] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-10-16 17:22:31.017  INFO 27812 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2017-10-16 17:22:31.320  INFO 27812 --- [restartedMain] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8080 (http)
+2017-10-16 17:22:31.327  INFO 27812 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2017-10-16 17:22:31.327  INFO 27812 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.20
+2017-10-16 17:22:31.399  INFO 27812 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2017-10-16 17:22:31.399  INFO 27812 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1276 ms
+2017-10-16 17:22:31.540  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2017-10-16 17:22:31.541  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2017-10-16 17:22:31.541  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2017-10-16 17:22:31.541  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2017-10-16 17:22:31.542  INFO 27812 --- [localhost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+2017-10-16 17:22:31.542  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2017-10-16 17:22:31.543  INFO 27812 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'messageDispatcherServlet' to [/services/*]
+2017-10-16 17:22:31.806  INFO 27812 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4e6be8e9: startup date [Mon Oct 16 17:22:30 CST 2017]; root of context hierarchy
+2017-10-16 17:22:31.847  INFO 27812 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/]}" onto public java.lang.String cn.mageek.quiz.controller.home.IndexController.hello(java.lang.String,org.springframework.ui.Model)
+2017-10-16 17:22:31.848  INFO 27812 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-10-16 17:22:31.849  INFO 27812 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-10-16 17:22:31.869  INFO 27812 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-10-16 17:22:31.869  INFO 27812 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-10-16 17:22:32.310  INFO 27812 --- [restartedMain] b.a.s.AuthenticationManagerConfiguration : 
+
+Using default security password: 3a5e31ae-9827-4af9-946f-0e7a0b15905f
+
+2017-10-16 17:22:32.397  INFO 27812 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: OrRequestMatcher [requestMatchers=[Ant [pattern='/css/**'], Ant [pattern='/js/**'], Ant [pattern='/images/**'], Ant [pattern='/webjars/**'], Ant [pattern='/**/favicon.ico'], Ant [pattern='/error']]], []
+2017-10-16 17:22:32.446  INFO 27812 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: org.springframework.boot.autoconfigure.security.SpringBootWebSecurityConfiguration$ApplicationNoWebSecurityConfigurerAdapter$1@57d49e24, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1364f415, org.springframework.security.web.context.SecurityContextPersistenceFilter@45a21968, org.springframework.security.web.header.HeaderWriterFilter@6b84760d, org.springframework.security.web.csrf.CsrfFilter@23140954, org.springframework.security.web.authentication.logout.LogoutFilter@2d9e5f7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@661df95e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4efc5f92, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5edf5dd3, org.springframework.security.web.session.SessionManagementFilter@162d8738, org.springframework.security.web.access.ExceptionTranslationFilter@50f603af]
+2017-10-16 17:22:32.571  INFO 27812 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2017-10-16 17:22:32.612  INFO 27812 --- [restartedMain] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2017-10-16 17:22:32.648  INFO 27812 --- [restartedMain] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8080 (http)
+2017-10-16 17:22:32.651  INFO 27812 --- [restartedMain] cn.mageek.quiz.QuizApplication           : Started QuizApplication in 2.879 seconds (JVM running for 3.355)
+2017-10-16 17:23:29.773  INFO 27812 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2017-10-16 17:23:29.774  INFO 27812 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2017-10-16 17:23:29.787  INFO 27812 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 13 ms
