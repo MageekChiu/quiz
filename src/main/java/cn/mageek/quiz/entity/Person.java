@@ -2,18 +2,17 @@ package cn.mageek.quiz.entity;
 
 import javax.persistence.*;
 
-//NamedQuery查询
 @Entity // 会自动生成该table
 public class Person {
-	@Id //2 主键
-	@GeneratedValue //3 自增
+	@Id //主键
+	@GeneratedValue //自增
 	private Long id;
 
     @Column(nullable = false)
     private String name;
-	
+    @Column(nullable = false)
 	private Integer age;
-	
+    @Column(nullable = false)
 	private String address;
 
 	public Person() {

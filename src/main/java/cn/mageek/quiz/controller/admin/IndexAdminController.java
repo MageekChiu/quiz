@@ -16,16 +16,16 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
-public class IndexController {
+public class IndexAdminController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PersonService personService;
 
     @Autowired
-    public IndexController(PersonService personService) {
+    public IndexAdminController(PersonService personService) {
         this.personService = personService;
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = {"","/"})
     public String hello(@RequestParam(name = "name",defaultValue = "default") String name,
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);
