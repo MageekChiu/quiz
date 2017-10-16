@@ -5,6 +5,7 @@ import cn.mageek.quiz.service.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -25,6 +25,7 @@ public class IndexController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PersonService personService;
     private final RedisTemplate redisTemplate;
+
     @Autowired
     public IndexController(PersonService personService,RedisTemplate redisTemplate) {
         this.personService = personService;
@@ -37,6 +38,7 @@ public class IndexController {
         model.addAttribute("message","message from controller,hello "+name);
         return "home/index";
     }
+
     @RequestMapping(value="/person/{address}")
     @ResponseBody
     public List<Person> getPersonByAddress(@PathVariable String address){
@@ -51,7 +53,9 @@ public class IndexController {
 
     @RequestMapping(value="redis")
     @ResponseBody
-    public String getPersonByAddress(){
+    public String getPersonByAddress(HttpSession httpSession){
+
+        httpSession.setAttribute("expire",1800000);//手工设置session
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         HashOperations<String,String,String> valueOperations1 = redisTemplate.opsForHash();
         valueOperations.set("add","asdasdsadsad");
@@ -59,4 +63,20 @@ public class IndexController {
         valueOperations1.put("sds","saas","是不是");
         return valueOperations.get("add");
     }
+
+    @Cacheable("searches")
+    @RequestMapping(value="cache")
+    @ResponseBody
+    public Person getCache(){
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        return "asssssssssssssssssssss";
+        return new Person();
+    }
+
+
+
 }

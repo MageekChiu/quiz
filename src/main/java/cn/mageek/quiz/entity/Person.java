@@ -1,9 +1,10 @@
 package cn.mageek.quiz.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity // 会自动生成该table
-public class Person {
+public class Person implements Serializable{
 	@Id //主键
 	@GeneratedValue //自增
 	private Long id;
