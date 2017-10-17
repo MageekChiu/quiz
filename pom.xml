@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>quiz</name>
+	<title>quiz</title>
 	<description>An Online Quiz Platform Provided By MageekChiu</description>
 
 	<parent>
