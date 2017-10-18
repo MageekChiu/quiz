@@ -7,39 +7,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author MageekChiu
+ */
 @Controller
 @RequestMapping("/admin")
 public class IndexAdminController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final PersonService personService;
 
     @Autowired
     public IndexAdminController(PersonService personService) {
-        this.personService = personService;
+
     }
 
     @RequestMapping(value = {"","/"})
     public String hello(@RequestParam(name = "name",defaultValue = "default") String name,
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);
-        return "home/index";
+        return "admin/index";
     }
-    @RequestMapping(value="/person/{address}")
-    @ResponseBody
-    public List<Person> getPersonByAddress(@PathVariable String address){
-        List<Person> personList = null;
-        try {
-            personList = personService.findByAddress(address);
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return  personList;
+    @GetMapping(value="/edit")
+    public String getPersonByAddress(){
+
+        return "admin/edit";
     }
 }
