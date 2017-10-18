@@ -1,9 +1,9 @@
 package cn.mageek.quiz.controller.home;
 
 import cn.mageek.quiz.entity.Article;
-import cn.mageek.quiz.entity.Person;
+import cn.mageek.quiz.entity.User;
 import cn.mageek.quiz.service.ArticleService;
-import cn.mageek.quiz.service.PersonService;
+import cn.mageek.quiz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ import java.util.List;
 @RequestMapping("/")
 public class IndexController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final PersonService personService;
+    private final UserService userService;
     private final RedisTemplate redisTemplate;
     private final ArticleService articleService;
 
     @Autowired
-    public IndexController(PersonService personService, RedisTemplate redisTemplate, ArticleService articleService) {
-        this.personService = personService;
+    public IndexController(UserService userService, RedisTemplate redisTemplate, ArticleService articleService) {
+        this.userService = userService;
         this.redisTemplate = redisTemplate;
         this.articleService = articleService;
     }
@@ -45,10 +45,10 @@ public class IndexController {
 
     @RequestMapping(value="/person/{address}")
     @ResponseBody
-    public List<Person> getPersonByAddress(@PathVariable String address){
-        List<Person> personList = null;
+    public List<User> getPersonByAddress(@PathVariable String address){
+        List<User> personList = null;
         try {
-            personList = personService.findByAddress(address);
+            personList = userService.getUserListByRole(address);
         }catch (Exception e){
             logger.error(e.getMessage());
         }
@@ -71,20 +71,24 @@ public class IndexController {
     @Cacheable("searches")
     @RequestMapping(value="cache")
     @ResponseBody
-    public Person getCache(){
+    public User getCache(){
         try {
             Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new Person();
+        return new User();
     }
 
     @RequestMapping(value="mongo")
     @ResponseBody
-    public List<Article> getArticle(@RequestParam(value = "title",defaultValue = "default") String title){
-        articleService.save(new Article("aa","default",12,"sad"));
-        return articleService.findByTitle(title);
+    public List<User> getArticle(@RequestParam(value = "role",defaultValue = "root") String role){
+//        userService.save(new User(22L,"111","111","root"));
+//        userService.save(new User(1L,"222","222","admin"));
+//        userService.save(new User(3L,"333","333","root"));
+        List<User> userList = userService.getUserListByRole(role);
+//        userList.add(userService.getUserListByRole("admin").get(0));
+        return userList;
     }
 
 

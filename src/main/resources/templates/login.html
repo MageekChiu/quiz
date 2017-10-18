@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<div class="section no-pad-bot" >
+    <div class="container">
+
+        <h2 class="header center orange-text">Login</h2>
+
+        <div class="row">
+            <div id="errorMessage" class="card-panel red lighten-2" th:if="${param.error}">
+                <span class="card-title">Invalid user username or password</span>
+            </div>
+
+            <form class="col s12" th:action="@{/login}" method="post">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="username" username="username" type="text" class="validate"/>
+                        <label for="username">Username</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" username="password" type="password" class="validate"/>
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row center">
+                    <button class="btn indigo waves-effect waves-light" type="submit" username="action">Submit
+                        <i class="mdi-content-send right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

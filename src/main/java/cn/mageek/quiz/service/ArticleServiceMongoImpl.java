@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Administrator
+ */
 @Service("articleService")
-public class ArticleServiceImpl implements  ArticleService {
+public class ArticleServiceMongoImpl implements  ArticleService {
 
     private final ArticleRepository articleRepository;
 
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository) {
+    public ArticleServiceMongoImpl(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
 
