@@ -1,13 +1,14 @@
 package cn.mageek.quiz.entity;
 
-import javax.persistence.Entity;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.Id;
 import java.io.Serializable;
 
-@Entity // 会自动生成该table
+@Document
 public class Article implements Serializable{
 	@Id //主键
-	private Long id;
+	private String id;
     private String title;
 	private Integer age;
 	private String address;
@@ -15,17 +16,17 @@ public class Article implements Serializable{
 	public Article() {
 		super();
 	}
-	public Article(Long id, String title, Integer age, String address) {
+	public Article(String id, String title, Integer age, String address) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.age = age;
 		this.address = address;
 	}
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getTitle() {

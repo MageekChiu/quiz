@@ -83,6 +83,7 @@ public class IndexController {
     @RequestMapping(value="mongo")
     @ResponseBody
     public List<Article> getArticle(@RequestParam(value = "title",defaultValue = "default") String title){
+        articleService.save(new Article("aa","default",12,"sad"));
         return articleService.findByTitle(title);
     }
 
