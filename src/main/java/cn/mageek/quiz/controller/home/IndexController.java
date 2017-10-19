@@ -82,13 +82,23 @@ public class IndexController {
 
     @RequestMapping(value="mongo")
     @ResponseBody
-    public List<User> getArticle(@RequestParam(value = "role",defaultValue = "root") String role){
+    public List<User> getUserList(@RequestParam(value = "role",defaultValue = "root") String role){
 //        userService.save(new User(22L,"111","111","root"));
 //        userService.save(new User(1L,"222","222","admin"));
 //        userService.save(new User(3L,"333","333","root"));
+
         List<User> userList = userService.getUserListByRole(role);
+
 //        userList.add(userService.getUserListByRole("admin").get(0));
+
         return userList;
+    }
+
+    @RequestMapping(value="mongoauth")
+    @ResponseBody
+    public User getUser(@RequestParam(value = "username",defaultValue = "111") String username){
+        User user = userService.findByUsername(username);
+        return user;
     }
 
 

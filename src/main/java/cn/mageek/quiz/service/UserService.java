@@ -10,5 +10,7 @@ import java.util.List;
 public interface UserService  {
     List<User> getUserListByRole(String role);
 
+    User findByUsername(String username);
+
     User save(User user);
 }

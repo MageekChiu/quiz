@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Document
 public class Question implements Serializable{
 	@Id //主键
-	private String id;
+	private Long id;
     private String title;
 	private Integer age;
 	private String address;
@@ -16,17 +16,17 @@ public class Question implements Serializable{
 	public Question() {
 		super();
 	}
-	public Question(String id, String title, Integer age, String address) {
+	public Question(Long id, String title, Integer age, String address) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.age = age;
 		this.address = address;
 	}
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getTitle() {

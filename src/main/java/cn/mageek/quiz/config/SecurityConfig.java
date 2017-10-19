@@ -23,14 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(4);
-    }
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
+
 
     @Autowired
-    public void configureAuth(AuthenticationManagerBuilder auth)
-            throws Exception {
+    public void configureAuth(AuthenticationManagerBuilder auth)   throws Exception {
 
 //        // 内存中建立账号密码，这个会使得 application.properties的密码配置不管用
 //        auth.inMemoryAuthentication()
@@ -38,17 +39,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password("admin").roles("USER", "ADMIN");
 
         auth.userDetailsService(userDetailsService);
+
 //        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+
 //        // 指定密码加密所使用的加密器为passwordEncoder()需要将密码加密后写入数据库
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() //关闭csrf
+                .csrf().
+                    disable() //关闭csrf
                 .authorizeRequests()
                     .regexMatchers("/admin/.*").authenticated() // 以/admin开头的 要登录
-//                    .antMatchers("/webjars/**","**.css","**.js","**.png","**.jpg").permitAll()//不用手动排除，spring boot 已经自动忽略了静态文件
+//                    .antMatchers("/webjars/**","**.css","**.js","**.png","**.jpg").permitAll()//不用手动排除，spring boot 已经自动忽略了常见类型静态文件,通过查看源代码 或者打开debug
                     .anyRequest().permitAll()//其余不需要登录
                 .and()
                     .formLogin()//自定义登录操作

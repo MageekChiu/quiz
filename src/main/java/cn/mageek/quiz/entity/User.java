@@ -25,10 +25,10 @@ public class User implements Serializable,UserDetails{
 	public User() {
 		super();
 	}
-	public User(Long id, String name, String password, String role) {
+	public User(Long id, String username, String password, String role) {
 		super();
 		this.id = id;
-		this.username = name;
+		this.username = username;
 		this.password = password;
 		this.role = role;
 	}
@@ -88,5 +88,13 @@ public class User implements Serializable,UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "username:"+username+","+
+                "password:"+password+","+
+                "role:"+role+","+
+                "id:"+id;
     }
 }
