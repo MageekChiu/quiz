@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author MageekChiu
@@ -21,6 +22,7 @@ public class User implements Serializable,UserDetails{
     private String username;
 	private String password;
 	private String role;
+	private List<Paper> papers;//做过的试卷列表
 
 	public User() {
 		super();

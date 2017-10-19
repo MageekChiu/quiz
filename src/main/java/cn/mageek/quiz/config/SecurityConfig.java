@@ -28,8 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        return new BCryptPasswordEncoder();
 //    }
 
-
-
     @Autowired
     public void configureAuth(AuthenticationManagerBuilder auth)   throws Exception {
 
@@ -41,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService);
 
 //        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-
 //        // 指定密码加密所使用的加密器为passwordEncoder()需要将密码加密后写入数据库
+
     }
 
     @Override

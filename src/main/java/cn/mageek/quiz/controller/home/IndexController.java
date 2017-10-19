@@ -1,8 +1,9 @@
 package cn.mageek.quiz.controller.home;
 
-import cn.mageek.quiz.entity.Article;
+import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.User;
-import cn.mageek.quiz.service.ArticleService;
+import cn.mageek.quiz.service.PaperService;
+import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +28,13 @@ public class IndexController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
     private final RedisTemplate redisTemplate;
-    private final ArticleService articleService;
+    private final QuestionService questionService;
 
     @Autowired
-    public IndexController(UserService userService, RedisTemplate redisTemplate, ArticleService articleService) {
+    public IndexController(UserService userService, RedisTemplate redisTemplate, QuestionService questionService) {
         this.userService = userService;
         this.redisTemplate = redisTemplate;
-        this.articleService = articleService;
+        this.questionService = questionService;
     }
 
     @RequestMapping("/")
@@ -99,6 +100,12 @@ public class IndexController {
     public User getUser(@RequestParam(value = "username",defaultValue = "111") String username){
         User user = userService.findByUsername(username);
         return user;
+    }
+
+    @RequestMapping(value="qs")
+    @ResponseBody
+    public List<Question> getQuestionList(@RequestParam(value = "tag",defaultValue = "数学") String tag){
+        return questionService.findByTag(tag);
     }
 
 

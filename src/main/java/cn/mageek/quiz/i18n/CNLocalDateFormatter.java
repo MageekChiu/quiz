@@ -16,9 +16,17 @@ public class CNLocalDateFormatter implements Formatter<LocalDate> {
 
     private static final String NORMAL_PATTERN = "dd/MM/yyyy";
 
+    private static final String CN_FULL_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    private static String getPattern(Locale locale) {
+    private static final String NORMAL_FULL_PATTERN = "dd/MM/yyyy ss/mm/HH";
+
+
+    private static String getDatePattern(Locale locale) {
         return isChina(locale) ? CN_PATTERN : NORMAL_PATTERN;
+    }
+
+    private static String getFullPattern(Locale locale) {
+        return isChina(locale) ? CN_FULL_PATTERN : NORMAL_FULL_PATTERN;
     }
 
     private static boolean isChina(Locale locale) {
@@ -28,11 +36,11 @@ public class CNLocalDateFormatter implements Formatter<LocalDate> {
 
     @Override
     public LocalDate parse(String text, Locale locale) throws ParseException {
-        return LocalDate.parse(text, DateTimeFormatter.ofPattern(getPattern(locale)));
+        return LocalDate.parse(text, DateTimeFormatter.ofPattern(getDatePattern(locale)));
     }
 
     @Override
     public String print(LocalDate object, Locale locale) {
-        return DateTimeFormatter.ofPattern(getPattern(locale)).format(object);
+        return DateTimeFormatter.ofPattern(getDatePattern(locale)).format(object);
     }
 }

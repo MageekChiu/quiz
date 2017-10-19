@@ -1,10 +1,9 @@
 package cn.mageek.quiz.repository;
 
 
-import cn.mageek.quiz.entity.Article;
+import cn.mageek.quiz.entity.Paper;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,8 +12,8 @@ import java.util.List;
  一种是使用MongodbOperation类提供的接口。 实现了： 增删改查，分页，批量插入，批量更新，负责条件等。
  * @author Administrator
  */
-public interface ArticleRepository extends MongoRepository<Article,Integer> {
+public interface PaperRepository extends MongoRepository<Paper,Integer> {
 
-    List<Article> findByTitle(String title);
+    List<Paper> findByTitle(String title);
 
 }
