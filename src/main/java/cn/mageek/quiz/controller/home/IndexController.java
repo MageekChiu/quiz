@@ -2,7 +2,6 @@ package cn.mageek.quiz.controller.home;
 
 import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.User;
-import cn.mageek.quiz.service.PaperService;
 import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.UserService;
 import org.slf4j.Logger;
@@ -22,9 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ *
+ */
 @Controller
 @RequestMapping("/")
 public class IndexController {
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
     private final RedisTemplate redisTemplate;
@@ -42,70 +45,6 @@ public class IndexController {
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);
         return "home/index";
-    }
-
-    @RequestMapping(value="/person/{address}")
-    @ResponseBody
-    public List<User> getPersonByAddress(@PathVariable String address){
-        List<User> personList = null;
-        try {
-            personList = userService.getUserListByRole(address);
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return  personList;
-    }
-
-    @RequestMapping(value="redis")
-    @ResponseBody
-    public String getPersonByAddress(HttpSession httpSession){
-
-        httpSession.setAttribute("expire",1800000);//手工设置session
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        HashOperations<String,String,String> valueOperations1 = redisTemplate.opsForHash();
-        valueOperations.set("add","asdasdsadsad");
-        valueOperations1.put("sds","sadsdas","sdaas");
-        valueOperations1.put("sds","saas","是不是");
-        return valueOperations.get("add");
-    }
-
-    @Cacheable("searches")
-    @RequestMapping(value="cache")
-    @ResponseBody
-    public User getCache(){
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return new User();
-    }
-
-    @RequestMapping(value="mongo")
-    @ResponseBody
-    public List<User> getUserList(@RequestParam(value = "role",defaultValue = "root") String role){
-//        userService.save(new User(22L,"111","111","root"));
-//        userService.save(new User(1L,"222","222","admin"));
-//        userService.save(new User(3L,"333","333","root"));
-
-        List<User> userList = userService.getUserListByRole(role);
-
-//        userList.add(userService.getUserListByRole("admin").get(0));
-
-        return userList;
-    }
-
-    @RequestMapping(value="mongoauth")
-    @ResponseBody
-    public User getUser(@RequestParam(value = "username",defaultValue = "111") String username){
-        User user = userService.findByUsername(username);
-        return user;
-    }
-
-    @RequestMapping(value="qs")
-    @ResponseBody
-    public List<Question> getQuestionList(@RequestParam(value = "tag",defaultValue = "数学") String tag){
-        return questionService.findByTag(tag);
     }
 
 
