@@ -45,11 +45,8 @@ public class User implements Serializable,UserDetails{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getAge() {
-		return password;
-	}
-	public void setAge(String age) {
-		this.password = age;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getRole() {
 		return role;
@@ -66,7 +63,7 @@ public class User implements Serializable,UserDetails{
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
 
