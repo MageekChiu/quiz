@@ -29,14 +29,10 @@ import java.util.List;
 public class IndexController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final UserService userService;
-    private final RedisTemplate redisTemplate;
     private final QuestionService questionService;
 
     @Autowired
-    public IndexController(UserService userService, RedisTemplate redisTemplate, QuestionService questionService) {
-        this.userService = userService;
-        this.redisTemplate = redisTemplate;
+    public IndexController( QuestionService questionService) {
         this.questionService = questionService;
     }
 

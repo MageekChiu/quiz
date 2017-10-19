@@ -14,8 +14,4 @@ public class LoginController {
         return "login";
     }
 
-//    @PostMapping(value = {"","/"})
-//    public String loginProcess(){
-//        return "redirect:/admin";
-//    }
 }
