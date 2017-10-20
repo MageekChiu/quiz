@@ -6,5 +6,5 @@ import cn.mageek.quiz.entity.Question;
 import java.util.List;
 
 public interface QuestionService {
-    List<Question> findByTag(String tag);
+    List<Question> findByTagWithStartAndLimit(String tag,Long start,Long limit);
 }

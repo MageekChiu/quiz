@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <version>1.5.6.RELEASE</version>
+            <version>1.5.8.RELEASE</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
         <!-- 国内源没有这种 需要手动安装到本地，或者先改到默认源源 装好了再改回来，但是好像不行-->

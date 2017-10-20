@@ -21,7 +21,8 @@ public class QuestionServiceMongoImpl implements QuestionService{
     }
 
     @Override
-    public List<Question> findByTag(String tag) {
+    public List<Question> findByTagWithStartAndLimit(String tag,Long start,Long limit) {
+
         return questionRepository.findByTag(tag);
     }
 }

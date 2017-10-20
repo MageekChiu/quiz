@@ -14,7 +14,7 @@ public class Question implements Serializable{
     private String title;//题目内容
     private String type;//题目类型：选择，简答  两种
     private List<String> tag;//问题的标签：计算机网络，数据结构，Java等等
-    private List<String> option;//候选答案列表
+    private List<String> option;//候选答案列表（选择题才有）
     private String answer ;//正确答案
 
     public Question(Long id, String title, String type, List<String> tag, List<String> option, String answer) {
