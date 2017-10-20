@@ -10,4 +10,6 @@ public interface QuestionService {
     List<Question> findByTagWithStartAndLimit(String tag,Long start,Long limit);
 
     Question findFirstByTag(String tag);
+
+    Question findRandomOneByTag(String tag);
 }

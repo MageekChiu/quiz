@@ -18,8 +18,6 @@ public interface QuestionRepository extends MongoRepository<Question,Integer> {
 
     Question findFirstByTag(String tag);
 
-
-
     List<Question> findByType(String type);
 
     List<Question> findByTagAndAndType(String tag,String type);

@@ -1,8 +1,9 @@
 package cn.mageek.quiz.entity;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class Tag implements Serializable {
     @Id
     public Long id;
     public String name; //标签名
-    public List<Long> questionId;//使用这个标签的问题的id
+    @DBRef //使用引用
+    public List<Question> questions;//使用这个标签的问题的id
 
     public String getName() {
         return name;
@@ -32,13 +34,15 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-    public List<Long> getQuestionId() {
-        return questionId;
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestionId(List<Long> questionId) {
-        this.questionId = questionId;
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
+
 
 
 }

@@ -34,6 +34,7 @@ public class IndexModel implements Serializable {//注意是 session scope 而�
     }
 
     public List<Question> getQuestionList(){//依次返回三种类型题目 一类一道
+        questionService.findRandomOneByTag("java");
         interview = questionService.findFirstByTag("java");
         iq = questionService.findFirstByTag("智力测试");
         turn = questionService.findFirstByTag("脑筋急转弯");
@@ -63,5 +64,6 @@ public class IndexModel implements Serializable {//注意是 session scope 而�
     public void setTurn(Question turn) {
         this.turn = turn;
     }
+
 
 }

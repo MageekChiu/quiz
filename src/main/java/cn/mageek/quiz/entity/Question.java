@@ -2,7 +2,7 @@ package cn.mageek.quiz.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.io.Serializable;
 import java.util.List;
 
@@ -72,5 +72,12 @@ public class Question implements Serializable{
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Question[id=%s, title='%s', type='%s']",
+                id, title, type);
     }
 }
