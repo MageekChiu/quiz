@@ -9,18 +9,15 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * @author MageekChiu
+ * 后台首页
  */
 @Controller
 @RequestMapping("/admin")
 public class IndexAdminController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public IndexAdminController() {
 
-    }
-
-    @RequestMapping(value = {"","/"})
+    @RequestMapping(value = {"","/","/question"})
     public String hello(@RequestParam(name = "name",defaultValue = "default") String name,
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);

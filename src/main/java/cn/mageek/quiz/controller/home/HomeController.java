@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 首页
+ * 用户个人
  */
 @Controller
-@RequestMapping("/")
-public class IndexController {
+@RequestMapping("/me")
+public class HomeController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final QuestionService questionService;
 
     @Autowired
-    public IndexController( QuestionService questionService) {
+    public HomeController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
-    @RequestMapping(value={"/","index"})
+    @RequestMapping(value = {"/","","info"})
     public String hello(@RequestParam(name = "name",defaultValue = "default") String name,
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);
