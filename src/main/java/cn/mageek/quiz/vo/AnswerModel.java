@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Form implements Serializable{
+/**
+ * 答题表单对象
+ * @author Administrator
+ */
+public class AnswerModel implements Serializable{
 
     @Size(min = 2,max = 20)
     private String name;
@@ -23,7 +27,7 @@ public class Form implements Serializable{
     private List<String> hobbies;
 
     //构造函数加了内容的话，表单的placeholder 就不管用了
-    public Form() {
+    public AnswerModel() {
         this.name = "";
         this.email = "";
         this.birthDate = LocalDate.now();

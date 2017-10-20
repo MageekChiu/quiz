@@ -5,6 +5,7 @@ import cn.mageek.quiz.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,5 +25,10 @@ public class QuestionServiceMongoImpl implements QuestionService{
     public List<Question> findByTagWithStartAndLimit(String tag,Long start,Long limit) {
 
         return questionRepository.findByTag(tag);
+    }
+
+    @Override
+    public Question findFirstByTag(String tag) {
+        return questionRepository.findFirstByTag(tag);
     }
 }
