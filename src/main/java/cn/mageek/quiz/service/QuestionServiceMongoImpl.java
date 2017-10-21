@@ -67,6 +67,11 @@ public class QuestionServiceMongoImpl implements QuestionService{
         return questionList.get((int) Math.floor( Math.random()*questionList.size()));//随机返回一个
     }
 
+    @Override
+    public  List<Question>  findRandomNumByTag(String tag,int num){
+        return mongoTemplate.find(new Query(Criteria.where("tag").is(tag)).limit(5),Question.class);
+    }
+
 
 
 }

@@ -12,4 +12,6 @@ public interface QuestionService {
     Question findFirstByTag(String tag);
 
     Question findRandomOneByTag(String tag);
+
+    public  List<Question>  findRandomNumByTag(String tag,int num);
 }

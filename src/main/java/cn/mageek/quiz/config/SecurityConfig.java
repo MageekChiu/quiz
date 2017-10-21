@@ -46,8 +46,8 @@ public class SecurityConfig {
             http
                     .csrf().disable() //关闭csrf
                     .authorizeRequests()
-                    .regexMatchers("/admin.*").hasAnyRole("ROOT","ADMIN")  // 以/admin开头的
-                    .regexMatchers("/me.*").hasAnyRole("ROOT","ADMIN","USER")  //
+                    .regexMatchers("/admin.*").hasAnyRole("ROOT","ADMIN")  // 以/admin开头的 要管理员权限
+                    .regexMatchers("/me.*").hasAnyRole("ROOT","ADMIN","USER")  // 以/me 开头的 要管理员或者用户权限 总之要登录
                     .anyRequest().permitAll()//其余不需要登录
                     .and()
                         .formLogin()//自定义登录操作

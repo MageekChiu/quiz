@@ -27,11 +27,21 @@ public class User implements Serializable,UserDetails{
 	public User() {
 		super();
 	}
-	public User(Long id, String username, String password, String role) {
+
+    public List<Paper> getPapers() {
+        return papers;
+    }
+
+    public void setPapers(List<Paper> papers) {
+        this.papers = papers;
+    }
+
+    public User(Long id, String username, String password, String role) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
+
 		this.role = role;
 	}
 	public Long getId() {

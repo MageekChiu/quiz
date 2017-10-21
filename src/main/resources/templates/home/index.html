@@ -16,6 +16,11 @@
     <link th:href="@{/css/carousel.css}" rel="stylesheet" />
 
     <title th:text="#{indexTitle}">小测试平台</title>
+
+    <style type="text/css">
+        /*鼠标滑过下拉*/
+        .nav > li:hover .dropdown-menu {display: block;}
+    </style>
 </head>
 <body>
 <div class="navbar-wrapper">
@@ -34,7 +39,15 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a th:href="@{/}" th:text="#{indexText}">首页</a></li>
-                        <li><a th:href="@{/me}" th:text="#{meText}">个人中心</a></li>
+                        <li>
+                            <a th:href="@{/me}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:utext="#{meText}">个人中心<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/me/info}" th:text="#{meInfo}">个人信息</a></li>
+                                <li><a th:href="@{/me/interviewtags}" th:text="#{meInterview}">笔试标签</a></li>
+                                <li><a th:href="@{/me/iq}" th:text="#{meIQ}">智力测试</a></li>
+                                <li><a th:href="@{/me/turn}" th:text="#{meTurn}">脑筋急转弯</a></li>
+                            </ul>
+                        </li>
                         <li><a href="http://mageek.cn" target="_blank" th:text="#{authorText}">关于作者</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:utext="#{langText}">语言(Lang)<span class="caret"></span></a>
@@ -120,7 +133,7 @@
             <ul class="list-group" th:if="*{getOption().size() gt 0}" >
                 <li class="list-group-item" th:each="option:*{getOption()}"><p th:text="${option}">玻尔兹曼</p></li>
             </ul>
-            <p><a class="btn btn-lg btn-info" th:href="@{/me}" role="button">更多>></a></p>
+            <p><a class="btn btn-lg btn-info" th:href="@{/me/interviewtags}" role="button">更多>></a></p>
         </div>
         <div class="col-md-5">
             <img class="featurette-image img-responsive center-block" th:src="@{/images/interviewSmall.jpg}" alt="Generic placeholder image" />
@@ -134,7 +147,7 @@
             <h2 class="featurette-heading">智力测试题：<span class="text-muted">提升智商有希望了 </span></h2>
             <h3><span th:text="*{getTitle()}">有十筐苹果，每筐里有十个，共100个，每筐里苹果的重量都是一样，其中有九筐每个苹果的重量都是1斤，另一筐中每个苹果的重量都是0.9斤，但是外表完全一样，用眼看或用手摸无法分辨。现在要你用一台普通的大秤一次把这筐重量轻的找出来。你可以办到么?</span> <span class="label label-success" th:text="*{getTag()}">智力测试</span></h3>
 
-            <p><a class="btn btn-lg btn-success" th:href="@{/me}" role="button">更多>></a></p>
+            <p><a class="btn btn-lg btn-success" th:href="@{/me/iq}" role="button">更多>></a></p>
         </div>
         <div class="col-md-5 col-md-pull-7">
             <img class="featurette-image img-responsive center-block" th:src="@{/images/math.jpg}" alt="Generic placeholder image" />
@@ -148,7 +161,7 @@
             <h2 class="featurette-heading">脑筋急转弯：<span class="text-muted">小小转个弯，快乐每一天 </span></h2>
             <h3><span th:text="*{getTitle()}">有一个字，人人见了都会念错。这是什么字？</span> <span class="label label-warning" th:text="*{getTag()}">脑筋急转弯</span></h3>
 
-            <p><a class="btn btn-lg btn-warning" th:href="@{/me}" role="button">更多>></a></p>
+            <p><a class="btn btn-lg btn-warning" th:href="@{/me/turn}" role="button">更多>></a></p>
         </div>
         <div class="col-md-5">
             <img class="featurette-image img-responsive center-block" th:src="@{/images/turn1.jpg}" alt="Generic placeholder image" />
