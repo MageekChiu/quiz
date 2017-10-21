@@ -24,11 +24,11 @@ public class HomeController {
         this.questionService = questionService;
     }
 
-    @RequestMapping(value = {"/","","info"})
+    @RequestMapping(value = {"/","","/info"})
     public String hello(@RequestParam(name = "name",defaultValue = "default") String name,
                         Model model){
         model.addAttribute("message","message from controller,hello "+name);
-        return "home/index";
+        return "admin/index";
     }
 
 
