@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 首页
@@ -36,14 +36,15 @@ public class IndexController {
     @RequestMapping(value={"/","index"})
     public String hello(HttpSession httpSession, Model model){
         //三大类各随机选一道题给前台，保证一次会话的三道题是一样的
-        List<Question> questionList = (List<Question>) httpSession.getAttribute("questionList");
+        HashMap<String,Question> questionMap = (HashMap<String, Question>) httpSession.getAttribute("questionMap");
 //        String.join(",", questionList.get(0).getTag());//list 转字符串
-        if (questionList==null){
+        if (questionMap==null){
             logger.debug("-------首次访问先生成并存起来");
-            questionList= indexModel.getQuestionList();
-            httpSession.setAttribute("questionList",questionList);
+            questionMap= indexModel.getQuestionMap();
+            httpSession.setAttribute("questionMap",questionMap);
         }
-        model.addAttribute("questionList",questionList);
+        logger.debug("interview:{}",questionMap.get("interview").toString());
+        model.addAttribute("questionMap",questionMap);
         return "home/index";
     }
 
