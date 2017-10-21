@@ -1,17 +1,17 @@
-package cn.mageek.quiz.controller;
+package cn.mageek.quiz.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/login")
+@RequestMapping("/logina")
 @Controller
-public class LoginController {
+public class LoginAdminController {
 
     @GetMapping(value = {"","/"})
     public String loginDisplay(){
-        return "login";
+        return "admin/login";
     }
 
 }
