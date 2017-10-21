@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <script src="/webjars/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="section no-pad-bot" >
+    <div class="container">
+        <h2 class="header center orange-text">Login</h2>
+            <div id="errorMessage" class="card-panel red lighten-2" th:if="${param.error}">
+                <span class="card-title">Invalid user username or password</span>
+            </div>
+
+            <form class="col s12" th:action="@{/logina}" method="post">
+
+                    <input id="username" name="username" type="text"/>
+                    <label for="username">Username</label>
+
+                    <input id="password" name="password" type="password"/>
+                    <label for="password">Password</label>
+
+                    <input class="btn indigo waves-effect waves-light" type="submit" name="action" />
+            </form>
+    </div>
+</div>
+</body>
+</html>

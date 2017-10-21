@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-    List<Question> findByTagWithStartAndLimit(String tag,Long start,Long limit);
+    List<Question> findByTagWithStartAndLimit(String tag, Long start, Long limit);
 
     Question findFirstByTag(String tag);
 

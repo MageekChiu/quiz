@@ -54,7 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().permitAll()//其余不需要登录
                 .and()
                     .formLogin()//自定义登录操作
-                    .loginPage("/login")//自定义登录页
+                    .loginPage("/logina")//自定义登录页
+                    .loginProcessingUrl("/logina")//貌似这两个保持一致才可以
                     .defaultSuccessUrl("/admin")//登陆成功后转向
 //                    .failureUrl("/login?error")//登录失败转向，其实不用配置，这是默认值
                     .permitAll()//所有人可以登录
