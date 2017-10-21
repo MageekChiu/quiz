@@ -21,7 +21,7 @@ public class User implements Serializable,UserDetails{
 	private Long id;
     private String username;
 	private String password;
-	private String role;
+	private String role; //ROLE_USER,ROLE_ADMIN,ROLE_ROOT
 	private List<Paper> papers;//做过的试卷列表
 
 	public User() {
