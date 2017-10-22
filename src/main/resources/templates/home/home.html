@@ -78,7 +78,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>要找工作，无处练题？</h1>
                     <p>搜集了大量的校招，社招真题，包括笔试、面试；同时还根据经典书籍中的内容进行自主命题。类型包含了选择、简答等，为您进入职场大门铺下一块坚实的垫脚石</p>
-                    <p><a class="btn btn-lg btn-primary" href="" role="button">开始答题</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#interview}" role="button">看看有没有技术含量</a></p>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>智商是多少，越测就越高！</h1>
                     <p>智商有先天因素，但是后天的学习也是可以增强，所以我们要多用脑、多思考、多测试，测着测着就慢慢变高了</p>
-                    <p><a class="btn btn-lg btn-primary" href="" role="button">开始测试</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#iq}" role="button">看看我的智商有多高</a></p>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>脑子转的快不快？</h1>
                     <p>脑筋急转弯可以改变我们的日常思维方式，让我们从多角度思考，考虑问题更全面，更重要的是想出来答案的那一瞬间，我们获得的乐趣是无穷的</p>
-                    <p><a class="btn btn-lg btn-primary" href="" role="button">开始转弯</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#turn}" role="button">老司机开车了，请转弯</a></p>
                 </div>
             </div>
         </div>
@@ -114,27 +114,69 @@
 </div>
 <!-- /.carousel -->
 
-<div class="container marketing">
+<!--/*@thymesVar id="infoModel" type="cn.mageek.quiz.vo.InfoModel"*/-->
+<div class="container" th:object="${infoModel}">
 
+    <div class="alert alert-success" th:if="*{isHistory()}">
+        <a href="#" class="close" data-dismiss="alert"> &times; </a>
+        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，平均分：<strong th:text="*{getAvg()}"></strong>。下面是一些例子。
+    </div>
 
-    <!--/*@thymesVar id="infoModel" type="cn.mageek.quiz.vo.InfoModel"*/-->
-    <div class="row" th:object="${infoModel}">
-        <div class="col-lg-4" th:each="question:*{getQuestionList()}">
-            <h3 th:text="${question.getTitle()}"></h3>
-            <ul class="list-group" th:if="${question.getOption().size() gt 0}" >
-                <li class="list-group-item" th:each="option:${question.getOption()}"><p th:text="${option}">玻尔兹曼</p></li>
-            </ul>
-            <p><a class="btn btn-default" href="#" role="button" th:text="${question.getAnswer()}">View details &raquo;</a></p>
-        </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
+    <div class="alert alert-warning" th:if="*{ !isHistory()}">
+        <a href="#" class="close" data-dismiss="alert"> &times; </a>
+        <strong>该加油啦！</strong> 您还没做过一道题，看看下面为您精选的题目吧。
+    </div>
 
+    <div class="row" >
+
+        <div class="panel panel-info col-md-4" th:each="question:*{getQuestionList()}"
+             style="min-height: 400px; max-height: 400px;overflow-y: auto">
+            <div class="panel-heading" >
+                <span th:text="${'标签：'+question.getTagAsString()}"></span>
+                <h3 class="text-success panel-title" th:text="${question.getTitle()}">Card title</h3>
+            </div>
+            <div class="panel-body">
+                <ol class="list-group list-cust" th:if="${question.getOption().size() gt 0}" >
+                    <li class="list-group-item" th:each="option,stat:${question.getOption()}"><p th:text="${stat.index+'：'+option}">玻尔兹曼</p></li>
+                </ol>
+                <div th:if="${question.getOption().size() lt 1}">
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <div class="panel-footer text-success" th:text="${'答案：'+question.getAnswer()}"></div>
+        </div>
+
+    </div>
 
     <hr class="featurette-divider" />
-    <!-- FOOTER -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <h2 class="featurette-heading">笔试面试题</h2>
+            <p class="lead">查看标签列表，选择您希望测试的标签生成试卷进行测试</p>
+            <p><a class="btn btn-lg btn-primary" th:href="@{/me/interviewtags}" role="button">马上开始答题</a></p>
+        </div>
+
+        <div class="col-md-4">
+            <h2 class="featurette-heading">智力测试</h2>
+            <p class="lead">直接生成试卷</p>
+            <p><a class="btn btn-lg btn-primary" th:href="@{/me/iq}" role="button">马上开始测试</a></p>
+        </div>
+
+        <div class="col-md-4">
+            <h2 class="featurette-heading">脑筋急转弯</h2>
+            <p class="lead">直接生成试卷</p>
+            <p><a class="btn btn-lg btn-primary" th:href="@{/me/turn}" role="button">马上开始转弯</a></p>
+        </div>
+    </div>
+
+    <hr class="featurette-divider" />
     <footer>
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>&copy; 2017 Mageek.cn </p>
     </footer>
-</div><!-- /.container -->
+</div>
+
 </body>
 </html>

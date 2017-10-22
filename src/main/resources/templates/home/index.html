@@ -38,8 +38,8 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a th:href="@{/}" th:text="#{indexText}">首页</a></li>
-                        <li>
+                        <li id="index" class="active"><a th:href="@{/}" th:text="#{indexText}">首页</a></li>
+                        <li id="me">
                             <a th:href="@{/me}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:utext="#{meText}">个人中心<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/me/info}" th:text="#{meInfo}">个人信息</a></li>
@@ -48,8 +48,8 @@
                                 <li><a th:href="@{/me/turn}" th:text="#{meTurn}">脑筋急转弯</a></li>
                             </ul>
                         </li>
-                        <li><a href="http://mageek.cn" target="_blank" th:text="#{authorText}">关于作者</a></li>
-                        <li class="dropdown">
+                        <li id="author"><a href="http://mageek.cn" target="_blank" th:text="#{authorText}">关于作者</a></li>
+                        <li id="lang" class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:utext="#{langText}">语言(Lang)<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{./?lang=en}" th:text="#{enText}">英语(en)</a></li>
@@ -78,7 +78,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>要找工作，无处练题？</h1>
                     <p>搜集了大量的校招，社招真题，包括笔试、面试；同时还根据经典书籍中的内容进行自主命题。类型包含了选择、简答等，为您进入职场大门铺下一块坚实的垫脚石</p>
-                    <p><a class="btn btn-lg btn-primary" href="#interview" role="button">开始答题</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#interview}" role="button">看看有没有技术含量</a></p>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>智商是多少，越测就越高！</h1>
                     <p>智商有先天因素，但是后天的学习也是可以增强，所以我们要多用脑、多思考、多测试，测着测着就慢慢变高了</p>
-                    <p><a class="btn btn-lg btn-primary" href="#iq" role="button">开始测试</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#iq}" role="button">看看我的智商有多高</a></p>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                 <div class="carousel-caption text-primary">
                     <h1>脑子转的快不快？</h1>
                     <p>脑筋急转弯可以改变我们的日常思维方式，让我们从多角度思考，考虑问题更全面，更重要的是想出来答案的那一瞬间，我们获得的乐趣是无穷的</p>
-                    <p><a class="btn btn-lg btn-primary" href="#turn" role="button">开始转弯</a></p>
+                    <p><a class="btn btn-lg btn-primary" th:href="@{/#turn}" role="button">老司机开车了，请转弯</a></p>
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
 
         <div class="col-md-7" th:object="${questionMap['interview']}">
             <h2 class="featurette-heading ">笔试面试题：<span class="text-muted">快来看看你准备好没有</span></h2>
-            <h3> <span th:text="*{getTitle()}">电磁辐射是谁发明的？</span> <span class="label label-info" th:text="*{getTag()}">物理学</span>  </h3>
+            <h3> <span th:text="*{getTitle()}">电磁辐射是谁发明的？</span> <span class="label label-info" th:text="*{getTagAsString()}">物理学</span>  </h3>
             <ul class="list-group" th:if="*{getOption().size() gt 0}" >
                 <li class="list-group-item" th:each="option:*{getOption()}"><p th:text="${option}">玻尔兹曼</p></li>
             </ul>
@@ -145,7 +145,7 @@
     <div class="row featurette" id="iq">
         <div class="col-md-7 col-md-push-5" th:object="${questionMap['iq']}">
             <h2 class="featurette-heading">智力测试题：<span class="text-muted">提升智商有希望了 </span></h2>
-            <h3><span th:text="*{getTitle()}">有十筐苹果，每筐里有十个，共100个，每筐里苹果的重量都是一样，其中有九筐每个苹果的重量都是1斤，另一筐中每个苹果的重量都是0.9斤，但是外表完全一样，用眼看或用手摸无法分辨。现在要你用一台普通的大秤一次把这筐重量轻的找出来。你可以办到么?</span> <span class="label label-success" th:text="*{getTag()}">智力测试</span></h3>
+            <h3><span th:text="*{getTitle()}">有十筐苹果，每筐里有十个，共100个，每筐里苹果的重量都是一样，其中有九筐每个苹果的重量都是1斤，另一筐中每个苹果的重量都是0.9斤，但是外表完全一样，用眼看或用手摸无法分辨。现在要你用一台普通的大秤一次把这筐重量轻的找出来。你可以办到么?</span> <span class="label label-success" th:text="*{getTagAsString()}">智力测试</span></h3>
 
             <p><a class="btn btn-lg btn-success" th:href="@{/me/iq}" role="button">更多>></a></p>
         </div>
@@ -159,7 +159,7 @@
     <div class="row featurette" id="turn">
         <div class="col-md-7" th:object="${questionMap['turn']}">
             <h2 class="featurette-heading">脑筋急转弯：<span class="text-muted">小小转个弯，快乐每一天 </span></h2>
-            <h3><span th:text="*{getTitle()}">有一个字，人人见了都会念错。这是什么字？</span> <span class="label label-warning" th:text="*{getTag()}">脑筋急转弯</span></h3>
+            <h3><span th:text="*{getTitle()}">有一个字，人人见了都会念错。这是什么字？</span> <span class="label label-warning" th:text="*{getTagAsString()}">脑筋急转弯</span></h3>
 
             <p><a class="btn btn-lg btn-warning" th:href="@{/me/turn}" role="button">更多>></a></p>
         </div>

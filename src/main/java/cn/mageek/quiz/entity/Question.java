@@ -74,6 +74,10 @@ public class Question implements Serializable{
         this.answer = answer;
     }
 
+    public String getTagAsString(){
+        return String.join(",",tag);
+    }
+
     @Override
     public String toString() {
         return String.format(
