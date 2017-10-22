@@ -13,7 +13,7 @@ public class Question implements Serializable{
 	private Long id;
     private String title;//题目内容
     private String type;//题目类型：单选，多选，简答
-    private List<String> tag;//问题的标签：计算机网络，数据结构，java等等面试笔试题，还有脑筋急转弯，智力测试两个大类的题
+    private List<String> tag;//问题的标签名称：计算机网络，数据结构，java等等面试笔试题，还有脑筋急转弯，智力测试两个大类的题
     private List<String> option;//候选答案列表（选择题才有）
     private String answer ;//正确答案，多选排序后用符号"|"连接成字符串
 

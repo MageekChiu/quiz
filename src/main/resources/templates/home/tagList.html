@@ -135,74 +135,43 @@
 </div>
 <!-- /.carousel -->
 
-<!--/*@thymesVar id="infoModel" type="cn.mageek.quiz.vo.InfoModel"*/-->
-<div class="container" th:object="${infoModel}">
 
-    <div class="alert alert-success" th:if="*{isHistory()}">
+<!--/*@thymesVar id="tagList" type="java.util.List<cn.mageek.quiz.entity.Tag>"*/-->
+<div class="container" th:object="${tagList}">
+
+    <div class="alert alert-success" >
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，平均分：<strong th:text="*{getAvg()}"></strong>。下面是一些例子。
+        请挑选不超过20个的标签，我们将为您生成一套试题，最多含20道题目
     </div>
 
-    <div class="alert alert-warning" th:if="*{ !isHistory()}">
-        <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        <strong>该加油啦！</strong> 您还没做过一道题，看看下面为您精选的题目吧。
-    </div>
+    <form method="post" th:action="@{/me/interview}">
+        <div class="row" >
 
-    <div class="row" >
-
-        <div class="panel panel-info col-md-4" th:each="question,qstat:*{getQuestionList()}"
-             style="min-height: 400px; max-height: 400px;overflow-y: auto">
-            <div class="panel-heading" >
-                <span th:text="${'标签：'+question.getTagAsString()}"></span>
-                <h3 class="text-success panel-title" th:text="${question.getTitle()}">Card title</h3>
-            </div>
-            <div class="panel-body">
-                <ol class="list-group list-cust" th:if="${question.getOption().size() gt 0}" >
-                    <li class="list-group-item" th:each="option,stat:${question.getOption()}"><p th:text="${stat.index+'：'+option}">玻尔兹曼</p></li>
-                </ol>
-                <div th:if="${question.getOption().size() lt 1}">
-                    <br/>
-                    <br/>
+            <div class="panel panel-info col-md-2" th:each="tag,tstat:${tagList}">
+                <div class="panel-heading" >
+                    <span th:text="${tag.getName()}"></span>
+                </div>
+                <div class="panel-body">
+                    <span th:text="${'含'+tag.getQuestionIdList().size()+'道题'}"></span>
+                </div>
+                <div class="panel-footer text-success">
+                    <label>
+                        <input type="checkbox" name="tagList" th:value="${tag.getName()}"/>选择
+                    </label>
                 </div>
             </div>
-            <div class="panel-footer text-success">
-                <button type="button" class="btn btn-success" th:name="${qstat.index}" onclick="showAns(this)">查看答案</button>
-                <span class="hidden" th:id="${'ans'+qstat.index}" th:text="${'答案：'+question.getAnswer()}"></span>
-            </div>
+
         </div>
-
-    </div>
-
-    <hr class="featurette-divider" />
-    <div class="row">
-
-        <div class="col-md-4">
-            <h2 class="featurette-heading">笔试面试题</h2>
-            <p class="lead">
-                首先会展示所有标签列表，您可以选择您希望测试的标签，然后生成试卷进行测试
-                包含选择，简答，题目做完后可以查看分数，矫正答案
-            </p>
-            <p><a class="btn btn-lg btn-success" th:href="@{/me/interviewtags}" role="button">马上开始答题</a></p>
-        </div>
-
-        <div class="col-md-4">
-            <h2 class="featurette-heading">智力测试</h2>
-            <p class="lead">后台直接生成一套试卷，做完一套试卷后您自行对比答案并进行打分</p>
-            <p><a class="btn btn-lg btn-info" th:href="@{/me/iq}" role="button">马上开始测试</a></p>
-        </div>
-
-        <div class="col-md-4">
-            <h2 class="featurette-heading">脑筋急转弯</h2>
-            <p class="lead">后台直接生成试卷，每做完一道题后您都可以查看答案，不打分，仅供娱乐，开阔思路哈</p>
-            <p><a class="btn btn-lg btn-warning" th:href="@{/me/turn}" role="button">马上开始转弯</a></p>
-        </div>
-    </div>
+        <hr/>
+        <input type="submit" class="btn btn-success center-block" value="提交"/>
+    </form>
 
     <hr class="featurette-divider" />
     <footer>
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>&copy; 2017 Mageek.cn </p>
     </footer>
+
 </div>
 
 </body>

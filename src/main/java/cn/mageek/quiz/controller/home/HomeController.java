@@ -2,8 +2,10 @@ package cn.mageek.quiz.controller.home;
 
 import cn.mageek.quiz.entity.Paper;
 import cn.mageek.quiz.entity.Question;
+import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.entity.User;
 import cn.mageek.quiz.service.QuestionService;
+import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
 import cn.mageek.quiz.vo.InfoModel;
 import org.slf4j.Logger;
@@ -13,11 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,10 +31,12 @@ public class HomeController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final QuestionService questionService;
     private final UserService userService;
+    private final TagService tagService;
     @Autowired
-    public HomeController(QuestionService questionService,UserService userService) {
+    public HomeController(QuestionService questionService,UserService userService,TagService tagService) {
         this.questionService = questionService;
         this.userService = userService;
+        this.tagService = tagService;
     }
 
     /**
@@ -84,23 +86,40 @@ public class HomeController {
     }
 
     /**
-     * 展示笔试题标签，用户选择过后可以生成试卷
+     * 展示某个标签下的问题，要分页
+     * @param model
+     * @return
+     */
+    @GetMapping(value = {"/tagquestion/{tag}"})//PathVariable 不能为空
+    public String tagQuestion(@PathVariable String tag, Model model){
+
+//        model.addAttribute();
+        return "home/index";
+    }
+
+    /**
+     * 展示笔试题标签，不分页，用户选择过后可以生成试卷
      * @param model
      * @return
      */
     @GetMapping(value = {"/interviewtags"})
     public String interviewtags(Model model){
-        model.addAttribute("message","message from controller,hello ");
-        return "admin/index";
+
+        List<Tag> tagList = tagService.findAll();
+        model.addAttribute("tagList",tagList);
+        return "home/tagList";
     }
 
+
     /**
-     * 展示一套笔试题,开始答题  自动评分
+     * 生成并展示一套笔试题,开始答题  自动评分
      * @param model
      * @return
      */
-    @GetMapping(value = {"/interview"})
-    public String interview(Model model){
+    @PostMapping(value = {"/interview"})
+    public String interview(@RequestParam("tagList") List<String> tagList, Model model){
+        logger.debug("传来的标签：共{}个,为：{}",tagList.size(),String.join(",",tagList));
+
         model.addAttribute("message","message from controller,hello ");
         return "admin/index";
     }

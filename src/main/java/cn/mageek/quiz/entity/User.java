@@ -22,7 +22,7 @@ public class User implements Serializable,UserDetails{
     private String username;
 	private String password;
 	private String role; //ROLE_USER,ROLE_ADMIN,ROLE_ROOT
-	private List<Paper> papers;//做过的试卷列表
+	private List<Paper> papers;//做过的试卷列表 因为用户做过的题数量小，而且建成后几乎不改了 所以直接存子文档而不用引用
 
 	public User() {
 		super();

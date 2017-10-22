@@ -1,5 +1,6 @@
 package cn.mageek.quiz.entity;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,9 +17,12 @@ import java.util.List;
 public class Tag implements Serializable {
     @Id
     public Long id;
-    public String name; //标签名
-    @DBRef //使用引用
-    public List<Question> questions;//使用这个标签的问题的id
+    @Indexed(unique = true)
+    public String name; //标签名,唯一
+//    @DBRef //不建议使用
+//    public List<Question> questions;//使用引用 因为问题可能很多，直接存会可能超过16M限制，引用（虽然也可能超过限制）可以增大存储量
+
+    public List<Long> questionIdList;//手动引用是建议的
 
     public String getName() {
         return name;
@@ -34,14 +38,21 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-
-    public List<Question> getQuestions() {
-        return questions;
+    public List<Long> getQuestionIdList() {
+        return questionIdList;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setQuestionIdList(List<Long> questionIdList) {
+        this.questionIdList = questionIdList;
     }
+//
+//    public List<Question> getQuestions() {
+//        return questions;
+//    }
+//
+//    public void setQuestions(List<Question> questions) {
+//        this.questions = questions;
+//    }
 
 
 

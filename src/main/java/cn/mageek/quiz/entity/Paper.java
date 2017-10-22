@@ -12,8 +12,8 @@ public class Paper implements Serializable{
 	@Id //主键
     private Long id;
     private String title;
-	private List<Question> questions;//问题列表
-    private List<String> answers;//回答者的答案
+	private List<Question> questions;//问题列表 因为一套试卷数量小，而且建成后几乎不改了 所以直接存子文档而不用引用
+    private List<String> answers;//回答者的答案，与问题顺序一致
     private int point;//得分
     private int status=-1;//-1 未开始做，0 部分完成，1 完成
     private int seconds;//消耗时间
