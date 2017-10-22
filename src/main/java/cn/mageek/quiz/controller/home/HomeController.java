@@ -149,8 +149,9 @@ public class HomeController {
      */
     @PostMapping(value = {"/interview"})
     public String interview(@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
-        //这里应该做一个防止重复生成的操作
-        logger.debug("传来的标签：共{}个,为：{}",tagList.size(),String.join(",",tagList));
+        //TODO 这里应该做一个防止重复生成的操作
+        logger.debug("传来的标签，共{}个,为：{}",tagList.size(),String.join(",",tagList));
+        //TODO 检查是否没有question 不然前面模板会报错
         Paper paper = tagService.getPaperByTags(tagList);//生成试卷题目
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");//修改时间格式
         paper.setTitle(principal.getName()+"--"+dtf.format(paper.getCreateTime()));//修改名字
@@ -165,14 +166,16 @@ public class HomeController {
 
     /**
      * 提交答题结果
-     * @param answerModel
+     * @param result
      * @param model
      * @param principal
      * @return
      */
     @PostMapping(value = {"/getresult"})
-    public String getResult(AnswerModel answerModel, Model model, Principal principal){
-        logger.debug(answerModel.toString());
+    public String getResult(@RequestParam("result") String result, Model model, Principal principal){
+        logger.debug(result);
+        Paper paper = paperService.process(result);
+        model.addAttribute("paper",paper);
         return "home/paper";
     }
 

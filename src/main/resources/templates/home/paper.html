@@ -36,10 +36,10 @@
             // $('#'+main+sub).addClass("hidden");//影藏
         });
 
-//        function showAns(obj) {
-//            var id = $(obj).attr('name');
-//            $('#ans'+id).removeClass("hidden");
-//        }
+        function showAns(obj) {
+            var id = $(obj).attr('name');
+            $('#ans'+id).removeClass("hidden");
+        }
     </script>
 
 
@@ -141,19 +141,23 @@
 <!--/*@thymesVar id="paper" type="cn.mageek.quiz.entity.Paper"*/-->
 <div class="container" th:object="${paper}">
 
-    <div class="alert alert-success" >
+    <div class="alert alert-info" th:if="${paper.getStatus()==-1}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
         试卷：<span th:text="${paper.getTitle()}"></span>。开始答题吧，抓紧时间哟，我们会记录您答题所花费的时间
     </div>
 
-    <form method="post" th:action="@{/me/getresult}">
+    <div class="alert alert-success" th:if="${paper.getStatus()==1}">
+        <a href="#" class="close" data-dismiss="alert"> &times; </a>
+        试卷：<span th:text="${paper.getTitle()}"></span>。答题结束，得分：<span th:text="${paper.getPoint()}"></span>,花费时间：<span th:text="${paper.getSeconds()}"></span>
+    </div>
+
+    <form method="post" id="answerForm" th:action="@{/me/getresult}">
 
         <input type="hidden" name="paperId" th:value="${paper.getId()}"/>
 
-        <input type="hidden" id="answerString" name="answer" />
 
         <!--进度条-->
-        <div class="progress progress-striped active">
+        <div class="progress progress-striped active" th:if="${paper.getStatus() !=1}">
             <div id="answer-progress" class="progress-bar progress-bar-success" role="progressbar"
                  aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
                  style="width: 0%;">
@@ -170,7 +174,8 @@
             //            var numQuestion = [[${paper.getQuestions().size()}]]-1;//不能直接这样写,会搞成字面量
             var numQuestion = [[${paper.getQuestions().size()}]];
             //            numQuestion -= 1;
-            //            var form = document.getElementById('answerForm');
+
+            var form = document.getElementById('answerForm');
 
             $(function(){
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -209,8 +214,36 @@
                 $('#btnPrev').click(function(){
                     $('.nav-tabs > .active').prev('li').find('a').trigger('click');
                 });
+                //加入拦截表单提交事件
+                try {
+                    form.addEventListener("submit", submitFn, false);
+                } catch(e) {
+                    form.attachEvent("onsubmit", submitFn); //IE8
+                }
 
             });
+            //拦截表单提交
+            function submitFn(event) {
+                event.preventDefault();
+
+                var data = $('form').serializeArray();
+                var finalData = {};
+                for (var i= 0;i<data.length;i++){
+                    if (finalData[data[i].name] !== undefined){//拼接checkbox
+                        finalData[data[i].name] += ('|'+data[i].value);
+                    }else{
+                        finalData[data[i].name] = (data[i].value);
+                    }
+                }
+                result = JSON.stringify(finalData);
+
+                var node = document.createElement("input");
+                node.name = "result";
+                node.value = result;
+                form.appendChild(node.cloneNode());//把处理过的结果加入表单
+                form.submit();
+                return false;
+            }
 
         </script>
 
@@ -250,21 +283,28 @@
                         请回答：<input type="text" th:name="${'answer'+qstat.index}" />
                     </label>
                 </div>
+
+                <!--答题已完成可以显示正确答案-->
+                <div th:if="${paper.getStatus()==1 and ques.getAnswer()== paper.getAnswers().get(qstat.index)}" class="alert alert-success">
+                    正确答案：<span th:text="${ques.getAnswer()}"></span>
+                    您的答案：<span th:text="${paper.getAnswers().get(qstat.index)}"></span>
+                </div>
+                <div th:if="${paper.getStatus()==1 and ques.getAnswer()!= paper.getAnswers().get(qstat.index)}" class="alert alert-danger">
+                    正确答案：<span th:text="${ques.getAnswer()}"></span>
+                    您的答案：<span th:text="${paper.getAnswers().get(qstat.index)}"></span>
+                </div>
+
             </div>
 
         </div>
 
-        <!--答题已完成可以显示正确答案-->
-        <div th:if="${paper.getStatus()==1}">
-            <span th:text=""></span>
-        </div>
 
         <hr/>
         <div class="tab-pane center-block row" id="answering">
             <button id="btnPrev" class="btn btn-primary btnPrevious pull-left" type="button">上一道</button>
             <button id="btnNext" class="btn btn-primary btnNext pull-right" type="button">下一道</button>
         </div>
-        <div id="answerdone" class="hidden">
+        <div id="answerdone" class="hidden" th:if="${paper.getStatus()!=1}">
             <input  type="submit" class="btn btn-success center-block" value="交卷"/>
         </div>
 

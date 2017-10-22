@@ -50,9 +50,16 @@ public class QuestionServiceMongoImpl implements QuestionService{
     @Override
     public Question findRandomOneByTag(String tag){
         // 增
-//        Question question = new Question(12L,"闰年有几天","简答",Arrays.asList("智力测试"), new ArrayList<>(),"366");//主键冲突也可以存？
+//        Question question = new Question("1","闰年有几天","简答",Arrays.asList("智力测试"), new ArrayList<>(),"366");//主键冲突就更新 不是insert
+//        Question question1 = new Question("2","闰年有几天","简答",Arrays.asList("智力测试"), new ArrayList<>(),"366");
+//        Question question2 = new Question("3","闰年有几天","简答",Arrays.asList("mysql"), new ArrayList<>(),"366");
+//        Question question3 = new Question("4","闰年有几天","简答",Arrays.asList("java"), new ArrayList<>(),"366");
+//        Question question5 = new Question("5","闰年有几天","简答",Arrays.asList("脑筋急转弯"), new ArrayList<>(),"366");
 //        mongoTemplate.save(question);//Save与insert区别，save是save or update,insert就是insert。;
-
+//        mongoTemplate.save(question1);
+//        mongoTemplate.save(question2);
+//        mongoTemplate.save(question3);
+//        mongoTemplate.save(question5);
         // 改
 //        Query query = new Query(Criteria.where("tag").is(tag));
 //        Update update = new Update().inc("age", 1);

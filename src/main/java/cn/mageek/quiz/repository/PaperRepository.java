@@ -16,4 +16,6 @@ public interface PaperRepository extends MongoRepository<Paper,String> { //ç±»å’
 
     List<Paper> findByTitle(String title);
 
+    Paper findById(String id);
+
 }
