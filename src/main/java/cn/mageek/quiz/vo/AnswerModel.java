@@ -13,61 +13,16 @@ import java.util.List;
 
 /**
  * 答题表单对象
- * @author Administrator
+ * @author Mageek Chiu
  */
 public class AnswerModel implements Serializable{
 
-    @Size(min = 2,max = 20)
-    private String name;
-    @Email
-    @NotEmpty
-    private String email;
-    @NotNull
-    private LocalDate birthDate ;
-    private List<String> hobbies;
-
-    //构造函数加了内容的话，表单的placeholder 就不管用了
-    public AnswerModel() {
-        this.name = "";
-        this.email = "";
-        this.birthDate = LocalDate.now();
-        this.hobbies = new ArrayList<>();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public List<String> getHobbies() {
-        return hobbies;
-    }
-
-    public void setHobbies(List<String> hobbies) {
-        this.hobbies = hobbies;
-    }
+    private String paperId;
+    private List<String> answer;
 
     @Override
     public String toString() {
-        return "name:" + name + " email:" + email + " birthDate:" + birthDate.toString() + " hobbies:" + hobbies.toString();
+        return "paperId:"+paperId+
+                "answers:"+String.join(",",answer);
     }
 }

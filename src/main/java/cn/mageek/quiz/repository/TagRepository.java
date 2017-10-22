@@ -8,6 +8,6 @@ import java.util.List;
 /**
  * @author Mageek Chiu
  */
-public interface TagRepository extends MongoRepository<Tag,Integer> {
+public interface TagRepository extends MongoRepository<Tag,String> {
     List<Tag> findAll();
 }

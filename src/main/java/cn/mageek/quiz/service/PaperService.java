@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PaperService {
     List<Paper> findByTitle(String address);
-    Paper save(Paper article);
+    Paper save(Paper paper);
 }

@@ -10,14 +10,14 @@ import java.util.List;
 public class Question implements Serializable{
 
 	@Id //主键
-	private Long id;
+	private String id;
     private String title;//题目内容
     private String type;//题目类型：单选，多选，简答
     private List<String> tag;//问题的标签名称：计算机网络，数据结构，java等等面试笔试题，还有脑筋急转弯，智力测试两个大类的题
     private List<String> option;//候选答案列表（选择题才有）
     private String answer ;//正确答案，多选排序后用符号"|"连接成字符串
 
-    public Question(Long id, String title, String type, List<String> tag, List<String> option, String answer) {
+    public Question(String id, String title, String type, List<String> tag, List<String> option, String answer) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -26,11 +26,11 @@ public class Question implements Serializable{
         this.answer = answer;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

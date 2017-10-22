@@ -18,7 +18,7 @@ import java.util.List;
 public class User implements Serializable,UserDetails{
 
 	@Id //主键
-	private Long id;
+	private String id;
     private String username;
 	private String password;
 	private String role; //ROLE_USER,ROLE_ADMIN,ROLE_ROOT
@@ -36,7 +36,7 @@ public class User implements Serializable,UserDetails{
         this.papers = papers;
     }
 
-    public User(Long id, String username, String password, String role) {
+    public User(String id, String username, String password, String role) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -44,10 +44,10 @@ public class User implements Serializable,UserDetails{
 
 		this.role = role;
 	}
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	@Override

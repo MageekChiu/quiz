@@ -4,9 +4,11 @@ import cn.mageek.quiz.entity.Paper;
 import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.entity.User;
+import cn.mageek.quiz.service.PaperService;
 import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
+import cn.mageek.quiz.vo.AnswerModel;
 import cn.mageek.quiz.vo.InfoModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +20,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户个人
@@ -32,11 +37,16 @@ public class HomeController {
     private final QuestionService questionService;
     private final UserService userService;
     private final TagService tagService;
+//    private final UserDetails userDetails;
+    private final PaperService paperService;
     @Autowired
-    public HomeController(QuestionService questionService,UserService userService,TagService tagService) {
+    public HomeController(QuestionService questionService,UserService userService,TagService tagService,PaperService paperService) {
         this.questionService = questionService;
         this.userService = userService;
         this.tagService = tagService;
+        //获得Spring Security 里面的用户信息 不能放构造函数里 因为此时还没有
+//        this.userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        this.paperService = paperService;
     }
 
     /**
@@ -46,10 +56,9 @@ public class HomeController {
      * @return String view
      */
     @GetMapping(value = {"/","","/info"})
-    public String info(Model model){
-        //获得Spring Security 里面的用户信息
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.findByUsername(userDetails.getUsername());
+    public String info(Model model, Principal principal){
+//        User user = userService.findByUsername(userDetails.getUsername());
+        User user = userService.findByUsername(principal.getName());
         List<Paper> userPapers = user.getPapers(); //用户做过的试卷
         int paperSize = userPapers.size();
         InfoModel infoModel = new InfoModel();
@@ -71,7 +80,7 @@ public class HomeController {
             double avg = 0;
             for (int i =0;i<paperSize;i++){
                 Paper paper = userPapers.get(i);
-                if (i<3){
+                if (i<5){
                     for (int j= 0;j<paper.getQuestions().size()&& j<5;j++){
                         questionList.add(paper.getQuestions().get(j));
                     }
@@ -79,7 +88,8 @@ public class HomeController {
                 avg += paper.getPoint();
             }
             infoModel.setAvg(avg/paperSize);
-            infoModel.setQuestionList(questionList);
+            //注意要去重
+            infoModel.setQuestionList(questionList.stream().distinct().collect(Collectors.toList()));
         }
         model.addAttribute("infoModel",infoModel);
         return "home/home";
@@ -110,6 +120,27 @@ public class HomeController {
         return "home/tagList";
     }
 
+    /**
+     * 展示一套智力测试,开始答题 整套题答完后 用户自己评分
+     * @param model
+     * @return
+     */
+    @GetMapping(value = {"/iq"})
+    public String iq(Model model){
+        model.addAttribute("message","message from controller,hello ");
+        return "home/index";
+    }
+
+    /**
+     * 展示一套脑筋急转弯,开始答题  每一道题答完用户可以查看答案，自己评分
+     * @param model
+     * @return
+     */
+    @GetMapping(value = {"/turn"})
+    public String turn(Model model){
+        model.addAttribute("message","message from controller,hello ");
+        return "home/index";
+    }
 
     /**
      * 生成并展示一套笔试题,开始答题  自动评分
@@ -117,33 +148,32 @@ public class HomeController {
      * @return
      */
     @PostMapping(value = {"/interview"})
-    public String interview(@RequestParam("tagList") List<String> tagList, Model model){
+    public String interview(@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
+        //这里应该做一个防止重复生成的操作
         logger.debug("传来的标签：共{}个,为：{}",tagList.size(),String.join(",",tagList));
-
-        model.addAttribute("message","message from controller,hello ");
-        return "admin/index";
+        Paper paper = tagService.getPaperByTags(tagList);//生成试卷题目
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");//修改时间格式
+        paper.setTitle(principal.getName()+"--"+dtf.format(paper.getCreateTime()));//修改名字
+        Paper paperSaved = paperService.save(paper);//存入paper
+        User user = userService.findByUsername(principal.getName());//找到用户
+        user.getPapers().add(paperSaved);//试卷存入所属用户
+        userService.save(user);//保存用户
+        model.addAttribute("paper",paper);
+        return "home/paper";
     }
 
-    /**
-     * 展示一套智力测试,开始答题 用户自己评分
-     * @param model
-     * @return
-     */
-    @GetMapping(value = {"/iq"})
-    public String iq(Model model){
-        model.addAttribute("message","message from controller,hello ");
-        return "admin/index";
-    }
 
     /**
-     * 展示一套脑筋急转弯,开始答题  用户自己评分
+     * 提交答题结果
+     * @param answerModel
      * @param model
+     * @param principal
      * @return
      */
-    @GetMapping(value = {"/turn"})
-    public String turn(Model model){
-        model.addAttribute("message","message from controller,hello ");
-        return "admin/index";
+    @PostMapping(value = {"/getresult"})
+    public String getResult(AnswerModel answerModel, Model model, Principal principal){
+        logger.debug(answerModel.toString());
+        return "home/paper";
     }
 
 }

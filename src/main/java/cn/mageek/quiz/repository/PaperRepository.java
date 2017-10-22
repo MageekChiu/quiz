@@ -12,7 +12,7 @@ import java.util.List;
  一种是使用MongodbOperation类提供的接口。 实现了： 增删改查，分页，批量插入，批量更新，负责条件等。
  * @author Administrator
  */
-public interface PaperRepository extends MongoRepository<Paper,Integer> {
+public interface PaperRepository extends MongoRepository<Paper,String> { //类和主键类型要一致
 
     List<Paper> findByTitle(String title);
 

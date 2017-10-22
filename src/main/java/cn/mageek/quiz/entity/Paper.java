@@ -9,8 +9,8 @@ import java.util.List;
 
 @Document
 public class Paper implements Serializable{
-	@Id //主键
-    private Long id;
+	@Id //主键,插入时不需要手工设置，mongo会生成 但是注意Mongo只能自动生成String 或者 BigInteger 类型的
+    private String id;
     private String title;
 	private List<Question> questions;//问题列表 因为一套试卷数量小，而且建成后几乎不改了 所以直接存子文档而不用引用
     private List<String> answers;//回答者的答案，与问题顺序一致
@@ -19,7 +19,10 @@ public class Paper implements Serializable{
     private int seconds;//消耗时间
     private LocalDateTime createTime;//试卷创建时间
 
-    public Paper(Long id, String title, List<Question> questions, List<String> answers, int point, int status, int seconds, LocalDateTime createTime) {
+    public Paper() {
+    }
+
+    public Paper(String id, String title, List<Question> questions, List<String> answers, int point, int status, int seconds, LocalDateTime createTime) {
         this.id = id;
         this.title = title;
         this.questions = questions;
@@ -30,11 +33,11 @@ public class Paper implements Serializable{
         this.createTime = createTime;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
