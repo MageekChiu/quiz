@@ -21,6 +21,27 @@
         /*鼠标滑过下拉*/
         .nav > li:hover .dropdown-menu {display: block;}
     </style>
+
+    <script language="JavaScript">
+
+        $(document).ready(function(){//高亮当前菜单
+            var curPath = window.location.pathname;
+            var pathArr = curPath.split("/");
+//            console.log(pathArr);
+            var main = pathArr[1]?pathArr[1]:'index';
+//            var sub = pathArr[2]?pathArr[2]:'index';
+            $('#'+main).addClass("active");//一级菜单
+//            $('#'+main+sub).addClass("active");//二级菜单
+            //$('#'+main).addClass("show");//显示
+            // $('#'+main+sub).addClass("hidden");//影藏
+        });
+        function showAns(obj) {
+            var id = $(obj).attr('name');
+            $('#ans'+id).removeClass("hidden");
+        }
+    </script>
+
+
 </head>
 <body>
 <div class="navbar-wrapper">
@@ -38,7 +59,7 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li id="index" class="active"><a th:href="@{/}" th:text="#{indexText}">首页</a></li>
+                        <li id="index"><a th:href="@{/}" th:text="#{indexText}">首页</a></li>
                         <li id="me">
                             <a th:href="@{/me}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:utext="#{meText}">个人中心<span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -129,7 +150,7 @@
 
     <div class="row" >
 
-        <div class="panel panel-info col-md-4" th:each="question:*{getQuestionList()}"
+        <div class="panel panel-info col-md-4" th:each="question,qstat:*{getQuestionList()}"
              style="min-height: 400px; max-height: 400px;overflow-y: auto">
             <div class="panel-heading" >
                 <span th:text="${'标签：'+question.getTagAsString()}"></span>
@@ -144,7 +165,10 @@
                     <br/>
                 </div>
             </div>
-            <div class="panel-footer text-success" th:text="${'答案：'+question.getAnswer()}"></div>
+            <div class="panel-footer text-success">
+                <button type="button" class="btn btn-success" th:name="${qstat.index}" onclick="showAns(this)">查看答案</button>
+                <span class="hidden" th:id="${'ans'+qstat.index}" th:text="${'答案：'+question.getAnswer()}"></span>
+            </div>
         </div>
 
     </div>
@@ -154,19 +178,22 @@
 
         <div class="col-md-4">
             <h2 class="featurette-heading">笔试面试题</h2>
-            <p class="lead">查看标签列表，选择您希望测试的标签生成试卷进行测试</p>
+            <p class="lead">
+                首先会展示所有标签列表，您可以选择您希望测试的标签，然后生成试卷进行测试
+                包含选择，简答，题目做完后可以查看分数，矫正答案
+            </p>
             <p><a class="btn btn-lg btn-primary" th:href="@{/me/interviewtags}" role="button">马上开始答题</a></p>
         </div>
 
         <div class="col-md-4">
             <h2 class="featurette-heading">智力测试</h2>
-            <p class="lead">直接生成试卷</p>
+            <p class="lead">后台直接生成一套试卷，做完一套试卷后您自行对比答案并进行打分</p>
             <p><a class="btn btn-lg btn-primary" th:href="@{/me/iq}" role="button">马上开始测试</a></p>
         </div>
 
         <div class="col-md-4">
             <h2 class="featurette-heading">脑筋急转弯</h2>
-            <p class="lead">直接生成试卷</p>
+            <p class="lead">后台直接生成试卷，每做完一道题后您都可以查看答案，不打分，仅供娱乐，开阔思路哈</p>
             <p><a class="btn btn-lg btn-primary" th:href="@{/me/turn}" role="button">马上开始转弯</a></p>
         </div>
     </div>
