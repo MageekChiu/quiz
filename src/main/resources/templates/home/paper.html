@@ -38,7 +38,11 @@
 
         function showAns(obj) {
             var id = $(obj).attr('name');
-            $('#ans'+id).removeClass("hidden");
+            if ($('#answer'+id).val() !== ''){//本题目已经回答了才可以查看
+                $('#ans'+id).removeClass("hidden");
+            }else{
+                alert("请先回答问题再查看答案");
+            }
         }
     </script>
 
@@ -156,6 +160,8 @@
         试卷：<span th:text="${paper.getTitle()}"></span>，在10分钟内创建过，请做完后再重新创建试卷。
     </div>
 
+
+
     <form method="post" id="answerForm" th:action="@{/me/getresult}">
 
         <input type="hidden" name="paperId" th:value="${paper.getId()}"/>
@@ -238,7 +244,15 @@
             function submitFn(event) {
                 event.preventDefault();
 
+                //首先检查是否填完了
                 var data = $('form').serializeArray();
+                for (var j= 1;j<=numQuestion;j++){
+                    if(data[j].value===''){
+                        alert("问题尚未完成，第"+(j)+'个')
+                        return false;
+                    }
+                }
+                //序列化答案 提交给后台
                 var finalData = {};
                 for (var i= 0;i<data.length;i++){
                     if (finalData[data[i].name] !== undefined){//拼接checkbox
@@ -293,8 +307,14 @@
                     <hr>
                     <hr>
                     <label>
-                        请回答：<input type="text" th:name="${'answer'+qstat.index}" />
+                        请回答：<input type="text" th:id="${'answer'+qstat.index}" th:name="${'answer'+qstat.index}" />
                     </label>
+                </div>
+
+                <!--脑筋急转弯可以做一道就查看答案-->
+                <div class="text-success" th:if="${ques.getTag().get(0)=='脑筋急转弯'}">
+                    <button type="button" class="btn btn-success" th:name="${qstat.index}" onclick="showAns(this)">查看答案</button>
+                    <span class="hidden" th:id="${'ans'+qstat.index}" th:text="${'答案：'+ques.getAnswer()}"></span>
                 </div>
 
                 <!--答题已完成可以显示答案,分别是回答正确和错误-->
