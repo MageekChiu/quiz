@@ -148,7 +148,7 @@
 
     <div class="alert alert-success" th:if="${paper.getStatus()==1}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        试卷：<span th:text="${paper.getTitle()}"></span>。答题结束，得分：<span th:text="${paper.getPoint()}"></span>,花费时间：<span th:text="${paper.getSeconds()}">秒</span>
+        试卷：<span th:text="${paper.getTitle()}"></span>。答题结束，得分：<span th:text="${paper.getPoint()}"></span>,花费时间：<span th:text="${paper.getSeconds()}"></span>秒
     </div>
 
     <div class="alert alert-success" th:if="${paper.getStatus()==0}">
@@ -181,6 +181,13 @@
             //            numQuestion -= 1;
 
             var form = document.getElementById('answerForm');
+
+            $(document).ready(function(){//高亮当前菜单
+                if(numQuestion ==1){//防止只有1道题
+                    $("#answerdone").removeClass("hidden");
+                    $("#answering").addClass("hidden");
+                }
+            });
 
             $(function(){
                 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

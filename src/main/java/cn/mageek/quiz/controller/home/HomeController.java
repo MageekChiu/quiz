@@ -10,6 +10,8 @@ import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
 import cn.mageek.quiz.vo.AnswerModel;
 import cn.mageek.quiz.vo.InfoModel;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -131,8 +133,7 @@ public class HomeController {
      */
     @GetMapping(value = {"/iq"})
     public String iq(HttpSession httpSession, Model model, Principal principal){
-        //TODO 这里应该做一个防止重复生成试卷的操作
-        Paper paper = paperService.getPaperTransaction(Arrays.asList("智力测试"), principal);
+        Paper paper = getPaper(httpSession, Arrays.asList("智力测试"), principal);
         model.addAttribute("paper",paper);
         return "home/paper";
     }
@@ -144,8 +145,7 @@ public class HomeController {
      */
     @GetMapping(value = {"/turn"})
     public String turn(HttpSession httpSession,Model model,Principal principal){
-        //TODO 这里应该做一个防止重复生成试卷的操作
-        Paper paper = paperService.getPaperTransaction(Arrays.asList("脑筋急转弯"), principal);
+        Paper paper = getPaper(httpSession, Arrays.asList("脑筋急转弯"), principal);
         model.addAttribute("paper",paper);
         return "home/paper";
     }
@@ -158,46 +158,35 @@ public class HomeController {
     @PostMapping(value = {"/interview"})
     public String interview(HttpSession httpSession,@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
         logger.debug("传来的标签，共{}个,为：{}",tagList.size(),String.join(",",tagList));
-        //TODO 这里应该做一个防止重复生成试卷的操作
-//        Paper paper = (Paper) httpSession.getAttribute("paperRecent");
+        Paper paper = getPaper(httpSession, tagList, principal);
+        model.addAttribute("paper",paper);
+        return "home/paper";
+    }
 
-        ObjectMapper mapper = new ObjectMapper();
+    /**
+     * 生成试卷 同时检查重复提交
+     * @param httpSession
+     * @param tagList
+     * @param principal
+     * @return
+     */
+    private Paper getPaper(HttpSession httpSession, @RequestParam("tagList") List<String> tagList, Principal principal) {
+        //防止重复生成试卷的操作
         String paperRecentString = (String) httpSession.getAttribute("paperRecent");
         Paper paper = null;
         if (paperRecentString!=null){
-            try {
-                paper = mapper.readValue(paperRecentString,Paper.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            paper = JSON.parseObject(paperRecentString,new TypeReference<Paper>(){});
         }
         if (paper==null){
             paper = paperService.getPaperTransaction(tagList, principal);
-//            httpSession.setAttribute("paperRecent",paper);//加上这一句就报错，而且也没存进去 虽然报的是 org.thymeleaf.exceptions.TemplateProcessingException: Exception processing template (home/paper)
-            //默认的序列化工具不能解决这种嵌套的对象，所以必须用专业的序列化工具。 用了jackson 有个bug 有 "tag":["java"] 还莫名奇妙多生成了一个"tagAsString":"java" 所以就不能反序列化了
-            String paperString = "序列化失败";
-            try {
-                paperString = mapper.writeValueAsString(paper);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            String paperString = JSON.toJSONString(paper);
             httpSession.setAttribute("paperRecent",paperString);
             logger.debug("生成了paper:{}",paperString);
         }else{
             paper.setStatus(0);
             logger.debug("使用了已有paper:{}",paper.toString());
         }
-        model.addAttribute("paper",paper);
-        return "home/paper";
-    }
-
-    private Object getSafeSessionTime(HttpSession httpSession ,String keys){
-        Object o = httpSession.getAttribute(keys);
-        if (o==null){
-            return 0L;
-        }else{
-            return o;
-        }
+        return paper;
     }
 
 
@@ -210,7 +199,7 @@ public class HomeController {
      */
     @PostMapping(value = {"/getresult"})
     public String getResult(@RequestParam("result") String result, HttpSession httpSession,Model model, Principal principal){
-        httpSession.removeAttribute("paperRecent");
+        httpSession.removeAttribute("paperRecent");//提交一个试卷后才允许再创建试卷
         logger.debug(result);
         Paper paperSaved = paperService.process(result);
         User user = userService.findByUsername(principal.getName());

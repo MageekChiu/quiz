@@ -63,7 +63,11 @@ public class TagServiceMongoImpl implements TagService {
         //打乱
         Collections.shuffle(questionUniqList);
         //最多取20道题
-        paper.setQuestions(questionUniqList.subList(0, Math.min(questionUniqList.size(), 20)));
+        questionUniqList =  questionUniqList.subList(0, Math.min(questionUniqList.size(), 20));
+        if (questionUniqList.size()<1){//防止为空
+            questionUniqList.add(new Question());
+        }
+        paper.setQuestions(questionUniqList);
         paper.setCreateTime(LocalDateTime.now());
         return paper;
     }
