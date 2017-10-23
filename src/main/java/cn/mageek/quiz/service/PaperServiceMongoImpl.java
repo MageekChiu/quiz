@@ -82,6 +82,9 @@ public class PaperServiceMongoImpl implements PaperService {
             if (paper == null){
                 return null;
             }
+            if (paper.getStatus()==1){//防止重复提交
+                return paper;
+            }
             int point = 0;
             List<Question> questionList = paper.getQuestions();
             List<String> answers = new LinkedList<>();

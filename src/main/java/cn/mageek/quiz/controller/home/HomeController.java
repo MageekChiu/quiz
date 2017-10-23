@@ -199,6 +199,7 @@ public class HomeController {
      */
     @PostMapping(value = {"/getresult"})
     public String getResult(@RequestParam("result") String result, HttpSession httpSession,Model model, Principal principal){
+        // 这里也要防止重复提交，交给服务层去做
         httpSession.removeAttribute("paperRecent");//提交一个试卷后才允许再创建试卷
         logger.debug(result);
         Paper paperSaved = paperService.process(result);
