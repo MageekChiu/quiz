@@ -10,6 +10,8 @@ import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
 import cn.mageek.quiz.vo.AnswerModel;
 import cn.mageek.quiz.vo.InfoModel;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -156,28 +159,40 @@ public class HomeController {
     public String interview(HttpSession httpSession,@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
         logger.debug("传来的标签，共{}个,为：{}",tagList.size(),String.join(",",tagList));
         //TODO 这里应该做一个防止重复生成试卷的操作
-        Long timeNow = System.currentTimeMillis();
-        Long paperRecentTime = (Long) getSafeSessionTime(httpSession,"paperRecentTime");
-        Paper paper;
-        paper = paperService.getPaperTransaction(tagList, principal);
+//        Paper paper = (Paper) httpSession.getAttribute("paperRecent");
 
-//        if (timeNow-paperRecentTime<600000){//十分钟之内不得重新创建
-//            paper = (Paper) httpSession.getAttribute("paperRecent");
-//            paper.setStatus(0);
-//            logger.debug("时间差不够，用旧试卷：{},{},{}",timeNow,paperRecentTime,paper.toString());
-//        }else{
-//            paper = paperService.getPaperTransaction(tagList, principal);
-//            httpSession.setAttribute("paperRecentTime",timeNow);//最近生成试卷的时间
-//            httpSession.setAttribute("paperRecent",paper);//最近生成的试卷
-//            logger.debug("时间差够,重新生成试卷：{},{},{}",timeNow,paperRecentTime,paper.toString());
-//        }
-
+        ObjectMapper mapper = new ObjectMapper();
+        String paperRecentString = (String) httpSession.getAttribute("paperRecent");
+        Paper paper = null;
+        if (paperRecentString!=null){
+            try {
+                paper = mapper.readValue(paperRecentString,Paper.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (paper==null){
+            paper = paperService.getPaperTransaction(tagList, principal);
+//            httpSession.setAttribute("paperRecent",paper);//加上这一句就报错，而且也没存进去 虽然报的是 org.thymeleaf.exceptions.TemplateProcessingException: Exception processing template (home/paper)
+            //默认的序列化工具不能解决这种嵌套的对象，所以必须用专业的序列化工具。 用了jackson 有个bug 有 "tag":["java"] 还莫名奇妙多生成了一个"tagAsString":"java" 所以就不能反序列化了
+            String paperString = "序列化失败";
+            try {
+                paperString = mapper.writeValueAsString(paper);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            httpSession.setAttribute("paperRecent",paperString);
+            logger.debug("生成了paper:{}",paperString);
+        }else{
+            paper.setStatus(0);
+            logger.debug("使用了已有paper:{}",paper.toString());
+        }
         model.addAttribute("paper",paper);
         return "home/paper";
     }
 
-    private Object getSafeSessionTime(HttpSession httpSession ,String key){
-        Object o = httpSession.getAttribute(key);
+    private Object getSafeSessionTime(HttpSession httpSession ,String keys){
+        Object o = httpSession.getAttribute(keys);
         if (o==null){
             return 0L;
         }else{
@@ -195,7 +210,6 @@ public class HomeController {
      */
     @PostMapping(value = {"/getresult"})
     public String getResult(@RequestParam("result") String result, HttpSession httpSession,Model model, Principal principal){
-        httpSession.removeAttribute("paperRecentTime");
         httpSession.removeAttribute("paperRecent");
         logger.debug(result);
         Paper paperSaved = paperService.process(result);

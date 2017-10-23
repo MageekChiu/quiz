@@ -26,6 +26,9 @@ public class Question implements Serializable{
         this.answer = answer;
     }
 
+    public Question() {
+    }
+
     public String getId() {
         return id;
     }
