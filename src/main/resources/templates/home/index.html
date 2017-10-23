@@ -131,7 +131,7 @@
             <h2 class="featurette-heading ">笔试面试题：<span class="text-muted">快来看看你准备好没有</span></h2>
             <h3> <span th:text="*{getTitle()}">电磁辐射是谁发明的？</span> <span class="label label-info" th:text="*{getTagAsString()}">物理学</span>  </h3>
             <ul class="list-group" th:if="*{getOption().size() gt 0}" >
-                <li class="list-group-item" th:each="option:*{getOption()}"><p th:text="${option}">玻尔兹曼</p></li>
+                <li class="list-group-item" th:each="option,stat:*{getOption()}"><p th:text="${stat.index+'：'+option}">玻尔兹曼</p></li>
             </ul>
             <p><a class="btn btn-lg btn-info" th:href="@{/me/interviewtags}" role="button">更多>></a></p>
         </div>

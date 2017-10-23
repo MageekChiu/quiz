@@ -20,8 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,7 +82,7 @@ public class HomeController {
             double avg = 0;
             for (int i =0;i<paperSize;i++){
                 Paper paper = userPapers.get(i);
-                if (i<5){
+                if (i<3){
                     for (int j= 0;j<paper.getQuestions().size()&& j<5;j++){
                         questionList.add(paper.getQuestions().get(j));
                     }
@@ -114,8 +116,7 @@ public class HomeController {
      */
     @GetMapping(value = {"/interviewtags"})
     public String interviewtags(Model model){
-
-        List<Tag> tagList = tagService.findAll();
+        List<Tag> tagList = tagService.findInterview();
         model.addAttribute("tagList",tagList);
         return "home/tagList";
     }
@@ -126,9 +127,11 @@ public class HomeController {
      * @return
      */
     @GetMapping(value = {"/iq"})
-    public String iq(Model model){
-        model.addAttribute("message","message from controller,hello ");
-        return "home/index";
+    public String iq(HttpSession httpSession, Model model, Principal principal){
+        //TODO 这里应该做一个防止重复生成试卷的操作
+        Paper paper = paperService.getPaperTransaction(Arrays.asList("智力测试"), principal);
+        model.addAttribute("paper",paper);
+        return "home/paper";
     }
 
     /**
@@ -137,9 +140,11 @@ public class HomeController {
      * @return
      */
     @GetMapping(value = {"/turn"})
-    public String turn(Model model){
-        model.addAttribute("message","message from controller,hello ");
-        return "home/index";
+    public String turn(HttpSession httpSession,Model model,Principal principal){
+        //TODO 这里应该做一个防止重复生成试卷的操作
+        Paper paper = paperService.getPaperTransaction(Arrays.asList("脑筋急转弯"), principal);
+        model.addAttribute("paper",paper);
+        return "home/paper";
     }
 
     /**
@@ -148,34 +153,56 @@ public class HomeController {
      * @return
      */
     @PostMapping(value = {"/interview"})
-    public String interview(@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
-        //TODO 这里应该做一个防止重复生成的操作
+    public String interview(HttpSession httpSession,@RequestParam("tagList") List<String> tagList, Model model, Principal principal){
         logger.debug("传来的标签，共{}个,为：{}",tagList.size(),String.join(",",tagList));
-        //TODO 检查是否没有question 不然前面模板会报错
-        Paper paper = tagService.getPaperByTags(tagList);//生成试卷题目
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");//修改时间格式
-        paper.setTitle(principal.getName()+"--"+dtf.format(paper.getCreateTime()));//修改名字
-        Paper paperSaved = paperService.save(paper);//存入paper
-        User user = userService.findByUsername(principal.getName());//找到用户
-        user.getPapers().add(paperSaved);//试卷存入所属用户
-        userService.save(user);//保存用户
+        //TODO 这里应该做一个防止重复生成试卷的操作
+        Long timeNow = System.currentTimeMillis();
+        Long paperRecentTime = (Long) getSafeSessionTime(httpSession,"paperRecentTime");
+        Paper paper;
+        paper = paperService.getPaperTransaction(tagList, principal);
+
+//        if (timeNow-paperRecentTime<600000){//十分钟之内不得重新创建
+//            paper = (Paper) httpSession.getAttribute("paperRecent");
+//            paper.setStatus(0);
+//            logger.debug("时间差不够，用旧试卷：{},{},{}",timeNow,paperRecentTime,paper.toString());
+//        }else{
+//            paper = paperService.getPaperTransaction(tagList, principal);
+//            httpSession.setAttribute("paperRecentTime",timeNow);//最近生成试卷的时间
+//            httpSession.setAttribute("paperRecent",paper);//最近生成的试卷
+//            logger.debug("时间差够,重新生成试卷：{},{},{}",timeNow,paperRecentTime,paper.toString());
+//        }
+
         model.addAttribute("paper",paper);
         return "home/paper";
     }
 
+    private Object getSafeSessionTime(HttpSession httpSession ,String key){
+        Object o = httpSession.getAttribute(key);
+        if (o==null){
+            return 0L;
+        }else{
+            return o;
+        }
+    }
+
 
     /**
-     * 提交答题结果
+     * 提交答题结果 批卷并保存
      * @param result
      * @param model
      * @param principal
      * @return
      */
     @PostMapping(value = {"/getresult"})
-    public String getResult(@RequestParam("result") String result, Model model, Principal principal){
+    public String getResult(@RequestParam("result") String result, HttpSession httpSession,Model model, Principal principal){
+        httpSession.removeAttribute("paperRecentTime");
+        httpSession.removeAttribute("paperRecent");
         logger.debug(result);
-        Paper paper = paperService.process(result);
-        model.addAttribute("paper",paper);
+        Paper paperSaved = paperService.process(result);
+        User user = userService.findByUsername(principal.getName());
+        user.getPapers().add(paperSaved);
+        userService.save(user);//保存用户
+        model.addAttribute("paper",paperSaved);
         return "home/paper";
     }
 

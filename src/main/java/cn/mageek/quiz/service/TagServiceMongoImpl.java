@@ -7,9 +7,13 @@ import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.repository.QuestionRepository;
 import cn.mageek.quiz.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,17 +24,26 @@ public class TagServiceMongoImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final QuestionRepository questionRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public TagServiceMongoImpl(TagRepository tagRepository,QuestionRepository questionRepository) {
+    public TagServiceMongoImpl(TagRepository tagRepository,QuestionRepository questionRepository,MongoTemplate mongoTemplate) {
         this.tagRepository = tagRepository;
         this.questionRepository = questionRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
+    @Override
     public List<Tag> findAll(){
         return tagRepository.findAll();
     }
 
+    @Override
+    public List<Tag> findInterview() {
+        return mongoTemplate.find(new Query(Criteria.where("name").nin(Arrays.asList("脑筋急转弯","智力测试"))),Tag.class);
+    }
+
+    @Override
     public Paper getPaperByTags(List<String> tags){
         Paper paper = new Paper();
         if (tags.size()>20){//最多只取20个标签

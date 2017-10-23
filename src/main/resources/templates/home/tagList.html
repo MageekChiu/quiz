@@ -152,11 +152,11 @@
                     <span th:text="${tag.getName()}"></span>
                 </div>
                 <div class="panel-body">
-                    <span th:text="${'含'+tag.getQuestionIdList().size()+'道题'}"></span>
+                      <a th:text="${'含'+tag.getQuestionIdList().size()+'道题'}" class=""  th:href="@{'/tagquestion/'+${tag.getName()}}"></a>
                 </div>
                 <div class="panel-footer text-success">
-                    <label>
-                        <input type="checkbox" name="tagList" th:value="${tag.getName()}"/>选择
+                    <label >
+                        <input type="checkbox" name="tagList" th:value="${tag.getName()}"/> <span class="alert-info" > 选择 </span>
                     </label>
                 </div>
             </div>

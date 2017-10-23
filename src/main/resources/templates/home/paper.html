@@ -148,7 +148,12 @@
 
     <div class="alert alert-success" th:if="${paper.getStatus()==1}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        试卷：<span th:text="${paper.getTitle()}"></span>。答题结束，得分：<span th:text="${paper.getPoint()}"></span>,花费时间：<span th:text="${paper.getSeconds()}"></span>
+        试卷：<span th:text="${paper.getTitle()}"></span>。答题结束，得分：<span th:text="${paper.getPoint()}"></span>,花费时间：<span th:text="${paper.getSeconds()}">秒</span>
+    </div>
+
+    <div class="alert alert-success" th:if="${paper.getStatus()==0}">
+        <a href="#" class="close" data-dismiss="alert"> &times; </a>
+        试卷：<span th:text="${paper.getTitle()}"></span>，在10分钟内创建过，请做完后再重新创建试卷。
     </div>
 
     <form method="post" id="answerForm" th:action="@{/me/getresult}">
@@ -238,6 +243,7 @@
                 result = JSON.stringify(finalData);
 
                 var node = document.createElement("input");
+                node.setAttribute("type","hidden");
                 node.name = "result";
                 node.value = result;
                 form.appendChild(node.cloneNode());//把处理过的结果加入表单
@@ -284,7 +290,7 @@
                     </label>
                 </div>
 
-                <!--答题已完成可以显示正确答案-->
+                <!--答题已完成可以显示答案,分别是回答正确和错误-->
                 <div th:if="${paper.getStatus()==1 and ques.getAnswer()== paper.getAnswers().get(qstat.index)}" class="alert alert-success">
                     正确答案：<span th:text="${ques.getAnswer()}"></span>
                     您的答案：<span th:text="${paper.getAnswers().get(qstat.index)}"></span>

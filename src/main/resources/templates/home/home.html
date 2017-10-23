@@ -140,7 +140,7 @@
 
     <div class="alert alert-success" th:if="*{isHistory()}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，平均分：<strong th:text="*{getAvg()}"></strong>。下面是一些例子。
+        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，平均分：<strong th:text="*{#numbers.formatDecimal(getAvg(),1,2)}"></strong>。下面是一些例子。
     </div>
 
     <div class="alert alert-warning" th:if="*{ !isHistory()}">

@@ -11,6 +11,8 @@ public interface TagService {
 
     List<Tag> findAll();
 
+    List<Tag> findInterview();
+
     Paper getPaperByTags(List<String> tags);
 
 }

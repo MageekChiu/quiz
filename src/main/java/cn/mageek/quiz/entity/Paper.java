@@ -97,6 +97,10 @@ public class Paper implements Serializable{
         this.createTime = createTime;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "title:"+title+","+
+                "status:"+status+","+
+                "createTime:"+createTime+",";
+    }
 }
