@@ -8,26 +8,19 @@ import cn.mageek.quiz.service.PaperService;
 import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
-import cn.mageek.quiz.vo.AnswerModel;
+import cn.mageek.quiz.vo.DataPageable;
 import cn.mageek.quiz.vo.InfoModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.security.Principal;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/me")
 public class HomeController {
 
+    private final int PAGE_SIZE = 10;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final QuestionService questionService;
     private final UserService userService;
@@ -107,11 +101,12 @@ public class HomeController {
      * @param model
      * @return
      */
-    @GetMapping(value = {"/tagquestion/{tag}"})//PathVariable 不能为空
-    public String tagQuestion(@PathVariable String tag, Model model){
-
-//        model.addAttribute();
-        return "home/index";
+    @GetMapping(value = {"/tagquestion/{tag}/{page}"})//PathVariable 不能为空
+    public String tagQuestion(@PathVariable String tag,@PathVariable int page, Model model){
+        page = page-1;//前台从1开始，后台从0开始
+        DataPageable<Question> questionDataPageable = tagService.getQuestionListByTag(tag,page,PAGE_SIZE);
+        model.addAttribute("questionDataPageable",questionDataPageable);
+        return "home/tagQuestion";
     }
 
     /**

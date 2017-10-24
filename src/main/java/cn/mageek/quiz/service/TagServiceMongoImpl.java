@@ -6,17 +6,16 @@ import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.repository.QuestionRepository;
 import cn.mageek.quiz.repository.TagRepository;
+import cn.mageek.quiz.vo.DataPageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,16 +32,29 @@ public class TagServiceMongoImpl implements TagService {
         this.mongoTemplate = mongoTemplate;
     }
 
+    /**
+     * 查找所有标签
+     * @return
+     */
     @Override
     public List<Tag> findAll(){
         return tagRepository.findAll();
     }
 
+    /**
+     * 查找笔试面试题的标签，亦即除去"脑筋急转弯","智力测试"
+     * @return
+     */
     @Override
     public List<Tag> findInterview() {
         return mongoTemplate.find(new Query(Criteria.where("name").nin(Arrays.asList("脑筋急转弯","智力测试"))),Tag.class);
     }
 
+    /**
+     * 根据标签列表得出一套试卷
+     * @param tags
+     * @return
+     */
     @Override
     public Paper getPaperByTags(List<String> tags){
         Paper paper = new Paper();
@@ -70,6 +82,33 @@ public class TagServiceMongoImpl implements TagService {
         paper.setQuestions(questionUniqList);
         paper.setCreateTime(LocalDateTime.now());
         return paper;
+    }
+
+    @Override
+    public DataPageable<Question> getQuestionListByTag(String tag, int page, int pageSize) {
+        DataPageable<Question> questionDataPageable = new DataPageable<>();
+//        List<String> questionIdList = mongoTemplate.find();//获得该标签下所有的ID list,不能这样查，只能像下面这样一次拿出一个文档
+        Tag tag1 = mongoTemplate.findOne( new Query(Criteria.where("name").is(tag)),Tag.class);
+        List<String> questionIdList = tag1.getQuestionIdList();
+        questionDataPageable.setAllNUm(questionIdList.size());//总数
+        questionDataPageable.setNumPage(pageSize);//每页条数
+        questionDataPageable.setAllPage((int) Math.ceil(questionDataPageable.getAllNUm()/pageSize));//总页数
+        questionDataPageable.setCurPage(page+1);//当前页
+        questionDataPageable.setType(tag);
+        //防止超出界限
+        int fromINdex = page*pageSize ;
+        if (fromINdex>questionDataPageable.getAllNUm()){
+            questionDataPageable.setCurPage(-1);//打标记
+            questionDataPageable.setContentList(new ArrayList<>());
+            questionDataPageable.generatePageList();//生成分页列表避免模板解析错误
+            return questionDataPageable;
+        }
+        int toIndex = questionDataPageable.getAllNUm()<(page+1)*pageSize?questionDataPageable.getAllNUm():(page+1)*pageSize;
+        questionIdList = questionIdList.subList(fromINdex,toIndex);//List 分页
+        List<Question> questionList = mongoTemplate.find(new Query(Criteria.where("id").in(questionIdList)),Question.class);
+        questionDataPageable.setContentList(questionList);
+        questionDataPageable.generatePageList();//生成分页列表
+        return questionDataPageable;
     }
 
 }

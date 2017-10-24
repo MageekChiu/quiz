@@ -136,42 +136,54 @@
 <!-- /.carousel -->
 
 
-<!--/*@thymesVar id="tagList" type="java.util.List<cn.mageek.quiz.entity.Tag>"*/-->
-<div class="container" th:object="${tagList}">
 
-    <div class="alert alert-success" >
+<!--/*@thymesVar id="questionDataPageable" type="cn.mageek.quiz.vo.DataPageable<cn.mageek.quiz.entity.Question>"*/-->
+<div class="container" th:object="${questionDataPageable}">
+
+
+    <div class="alert alert-success" th:if="${questionDataPageable.getCurPage()==-1}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        请挑选不超过20个的标签，我们将为您生成一套试题，最多含20道题目
+        已没有更多内容
     </div>
 
-    <form method="post" th:action="@{/me/interview}">
-        <div class="row" >
+    <div class="row"  >
 
-            <div class="panel panel-info col-md-2" th:each="tag,tstat:${tagList}">
-                <div class="panel-heading" >
-                    <span th:text="${tag.getName()}"></span>
-                </div>
-                <div class="panel-body">
-                      <a th:text="${'含'+tag.getQuestionIdList().size()+'道题'}" class=""  th:href="@{'/me/tagquestion/'+${tag.getName()}+'/1'}"></a>
-                </div>
-                <div class="panel-footer text-success">
-                    <label >
-                        <input type="checkbox" name="tagList" th:value="${tag.getName()}"/> <span class="alert-info" > 选择 </span>
-                    </label>
+        <div class="panel panel-info col-md-4" th:each="question,qstat:*{getContentList()}"
+             style="min-height: 400px; max-height: 400px;overflow-y: auto">
+            <div class="panel-heading" >
+                <!--/*@thymesVar id="question" type="cn.mageek.quiz.entity.Question"*/-->
+                <span th:text="${'标签：'+question.getTagAsString()}"></span>
+                <h3 class="text-success panel-title" th:text="${question.getTitle()}">Card title</h3>
+            </div>
+            <div class="panel-body">
+                <ol class="list-group list-cust" th:if="${question.getOption().size() gt 0}" >
+                    <li class="list-group-item" th:each="option,stat:${question.getOption()}"><p th:text="${stat.index+'：'+option}">玻尔兹曼</p></li>
+                </ol>
+                <div th:if="${question.getOption().size() lt 1}">
+                    <br/>
+                    <br/>
                 </div>
             </div>
-
+            <div class="panel-footer text-success">
+                <button type="button" class="btn btn-success" th:name="${qstat.index}" onclick="showAns(this)">查看答案</button>
+                <span class="hidden" th:id="${'ans'+qstat.index}" th:text="${'答案：'+question.getAnswer()}"></span>
+            </div>
         </div>
-        <hr/>
-        <input type="submit" class="btn btn-success center-block" value="选好了"/>
-    </form>
+
+    </div>
+
+    <ul class="pagination pagination-lg " th:if="${questionDataPageable.getCurPage()>0}">
+        <li th:if="*{getCurPage()  > 1 }"><a th:href="@{'/me/tagquestion/'+${questionDataPageable.getType()}+'/'+${questionDataPageable.getCurPage()-1}}">&laquo;</a></li>
+        <li th:each="page:*{pageList}" ><a th:href="@{'/me/tagquestion/'+${questionDataPageable.getType()}+'/'+${page}}" th:text="${page}">1</a></li>
+        <li th:if="*{getCurPage() < getAllPage()}" ><a th:href="@{'/me/tagquestion/'+${questionDataPageable.getType()}+'/'+${questionDataPageable.getCurPage()+1}}">&raquo;</a></li>
+    </ul>
 
     <hr class="featurette-divider" />
+
     <footer>
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>&copy; 2017 Mageek.cn </p>
     </footer>
-
 </div>
 
 </body>

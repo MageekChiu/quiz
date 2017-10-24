@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .formLogin()//自定义登录操作
                         .loginPage("/logina")//自定义登录页
                         .loginProcessingUrl("/logina")//貌似这两个保持一致才可以
-                        .defaultSuccessUrl("/admin")//登陆成功后转向
+                        .defaultSuccessUrl("/me")//登陆成功后转向
                         .failureUrl("/logina?error")//登录失败转向，
                     .and()
                         .rememberMe()
