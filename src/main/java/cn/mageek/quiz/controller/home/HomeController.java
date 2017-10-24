@@ -170,7 +170,7 @@ public class HomeController {
      * @param principal
      * @return
      */
-    private Paper getPaper(HttpSession httpSession, @RequestParam("tagList") List<String> tagList, Principal principal) {
+    private Paper getPaper(HttpSession httpSession, List<String> tagList, Principal principal) {
         //防止重复生成试卷的操作
         String paperRecentString = (String) httpSession.getAttribute("paperRecent");
         Paper paper = null;
