@@ -18,4 +18,15 @@ public interface TagService {
 
     DataPageable<Question> getQuestionListByTag(String tag, int page, int pageSize);
 
+    void delete(String tagID);
+
+    Tag delByID(String tagID);
+
+    Tag save(Tag tag);
+
+    List<Tag> createByTagNameList(List<String> tagNameList);
+
+    Tag updateNameById(String ID,String name);
+
+
 }

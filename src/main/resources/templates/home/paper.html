@@ -191,7 +191,7 @@
 
             var form = document.getElementById('answerForm');
 
-            $(document).ready(function(){//高亮当前菜单
+            $(document).ready(function(){
                 if(numQuestion ==1){//防止只有1道题
                     $("#answerdone").removeClass("hidden");
                     $("#answering").addClass("hidden");
@@ -249,6 +249,10 @@
 
                 //首先检查是否填完了
                 var data = $('form').serializeArray();
+                if(data.length<numQuestion+1){
+                    alert("问题尚未完成");
+                    return false;
+                }
                 for (var j= 1;j<=numQuestion;j++){
                     if(data[j].value===''){
                         alert("问题尚未完成，第"+(j)+'个')
@@ -299,7 +303,7 @@
                 <!--选择题-->
                 <ol class="list-group list-cust" th:if="${ques.getOption().size() gt 0}" >
                     <li class="list-group-item" th:each="option,stat:${ques.getOption()}">
-                        <p th:text="${stat.index+'：'+option}">玻尔兹曼</p>
+                        <p th:text="${stat.index+' ： '+option}">玻尔兹曼</p>
                         <label>
                             选择：<input type="checkbox" th:name="${'answer'+qstat.index}" th:value="${stat.index}"/>
                         </label>

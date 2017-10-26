@@ -8,9 +8,9 @@ import cn.mageek.quiz.repository.QuestionRepository;
 import cn.mageek.quiz.repository.TagRepository;
 import cn.mageek.quiz.vo.DataPageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author Mageek Chiu
+ */
 @Service
 public class TagServiceMongoImpl implements TagService {
 
@@ -110,5 +113,43 @@ public class TagServiceMongoImpl implements TagService {
         questionDataPageable.generatePageList();//生成分页列表
         return questionDataPageable;
     }
+
+    @Override
+    public void delete(String tagID){
+        tagRepository.delete(tagID);
+    }
+
+    @Override
+    public Tag delByID(String tagID){
+//        return mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(tagID)), Tag.class);//
+//        return mongoTemplate.findAndRemove(Query.query(Criteria.where("_id").is(tagID)), Tag.class);//
+        Tag tag =  mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(tagID)), Tag.class);//上面之所以删不掉是因为我收工录入的数据 id 是 int32
+        //todo 检查对应的question
+        return tag;
+    }
+
+    @Override
+    public Tag save(Tag tag) {
+        return tagRepository.save(tag);
+    }
+
+    @Override
+    public List<Tag> createByTagNameList(List<String> tagNameList){
+        List<Tag> tagList = tagNameList.stream().map(tagName -> {
+            Tag tag = new Tag();
+            tag.setName(tagName);
+            tag.setQuestionIdList(new LinkedList<>());
+            return save(tag);
+
+        }).collect(Collectors.toList());
+
+        return  tagList;
+    }
+
+    @Override
+    public Tag updateNameById(String ID, String name){
+        return mongoTemplate.findAndModify(Query.query(Criteria.where("id").is(ID)), Update.update("name",name),Tag.class);
+    }
+
 
 }
