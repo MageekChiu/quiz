@@ -13,5 +13,9 @@ public interface QuestionService {
 
     Question findRandomOneByTag(String tag);
 
-    public  List<Question>  findRandomNumByTag(String tag,int num);
+    List<Question>  findRandomNumByTag(String tag,int num);
+
+    Question delByID(String id);
+
+    Question findByID(String id);
 }

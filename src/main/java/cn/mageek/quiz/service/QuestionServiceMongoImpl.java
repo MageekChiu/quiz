@@ -1,6 +1,7 @@
 package cn.mageek.quiz.service;
 
 import cn.mageek.quiz.entity.Question;
+import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.repository.QuestionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,17 @@ public class QuestionServiceMongoImpl implements QuestionService{
         return mongoTemplate.find(new Query(Criteria.where("tag").is(tag)).limit(5),Question.class);
     }
 
+    @Override
+    public Question delByID(String id) {
+        Question question = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)),Question.class);
+        //TODO 检查对应的标签
+        return  question;
+    }
+
+    @Override
+    public Question findByID(String id) {
+        return questionRepository.findOne(id);
+    }
 
 
 }

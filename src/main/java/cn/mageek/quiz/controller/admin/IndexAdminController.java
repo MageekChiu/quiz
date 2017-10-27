@@ -1,10 +1,12 @@
 package cn.mageek.quiz.controller.admin;
 
+import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.Tag;
 import cn.mageek.quiz.service.PaperService;
 import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.TagService;
 import cn.mageek.quiz.service.UserService;
+import cn.mageek.quiz.vo.DataPageable;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,10 +122,13 @@ public class IndexAdminController {
      * @param model
      * @return
      */
-    @RequestMapping(value = {"/question/{tagID}/{page}"})
-    public String quesList(@PathVariable String tagID,@PathVariable int page, Model model){
-        model.addAttribute("message","");
-        return "admin/index";
+    @RequestMapping(value = {"/question"})
+    public String quesList(@RequestParam(value = "tagName",defaultValue = "java") String tagName,@RequestParam(value = "page",defaultValue = "1") int page, Model model){
+        page = page-1;//前台从1开始，后台从0开始
+        DataPageable<Question> questionDataPageable = tagService.getQuestionListByTag(tagName,page,10);
+//        logger.debug("questionDataPageable数量:{}",questionDataPageable.getContentList().size());
+        model.addAttribute("questionDataPageable",questionDataPageable);
+        return "admin/questionList";
     }
 
     /**
@@ -132,9 +137,33 @@ public class IndexAdminController {
      * @return
      */
     @RequestMapping(value = {"/questiondel/{quesID}"})
-    public String quesDel(@PathVariable String quesID, Model model){
-        model.addAttribute("message","");
-        return "admin/index";
+    public String quesDel(@PathVariable String quesID,RedirectAttributes redirectAttributes ,Model model){
+        Question question =  questionService.delByID(quesID);
+        redirectAttributes.addFlashAttribute("msg",question==null?"删除失败":"删除成功");
+        return "redirect:/admin/question";
+    }
+
+    /**
+     * 展示问题编辑界面
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = {"/questionshow/{quesID}"})
+    public String questionShow(@PathVariable String quesID ,Model model){
+        Question question = questionService.findByID(quesID);
+        model.addAttribute("question",question);
+        return "admin/editQ";
+    }
+
+    /** 修改问题 检查标签
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = {"/questionedit/{quesID}"})
+    public String quesEdit(@PathVariable String quesID ,Model model){
+        Question question = questionService.findByID(quesID);
+        model.addAttribute("question",question);
+        return "admin/edit";
     }
 
     /**
@@ -154,7 +183,7 @@ public class IndexAdminController {
      * @param model
      * @return
      */
-    @RequestMapping(value = {"/userlist"})
+    @RequestMapping(value = {"/user"})
     public String userList(@RequestParam(name = "tag",defaultValue = "脑筋急转弯") String name,
                            Model model){
         model.addAttribute("message","message from controller,hello "+name);
@@ -167,7 +196,7 @@ public class IndexAdminController {
      * @param model
      * @return
      */
-    @RequestMapping(value = {"/paperlist"})
+    @RequestMapping(value = {"/paper"})
     public String paperList(@RequestParam(name = "tag",defaultValue = "脑筋急转弯") String name,
                            Model model){
         model.addAttribute("message","message from controller,hello "+name);
