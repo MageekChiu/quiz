@@ -55,5 +55,10 @@ public class Tag implements Serializable {
 //    }
 
 
-
+    @Override
+    public String toString() {
+        return "id:"+id+
+                "，name:"+name+
+                "，size:"+questionIdList.size();
+    }
 }

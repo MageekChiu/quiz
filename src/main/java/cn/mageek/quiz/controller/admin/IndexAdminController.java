@@ -97,11 +97,22 @@ public class IndexAdminController {
      * @param model
      * @return
      */
-    @RequestMapping(value = {"/tagupdate"})
-    public String tagUpdate(Model model){
-        List<Tag> tagList = tagService.findInterview();
-        model.addAttribute("tagList",tagList);
-        return "admin/index";
+    @PostMapping(value = {"/tagupdate"})
+    @ResponseBody
+    public String tagUpdate(@RequestBody Tag tag, Model model){
+        logger.debug("tag:{}",tag.toString());
+        Tag newTag = tagService.updateNameById(tag.getId(),tag.getName());//返回的是修改前的 所以是 oldTag才对
+        if(newTag != null) {
+            logger.debug("newTag:{}",newTag.toString());
+            if(!newTag.getName().equals(tag.getName())){
+                return "修改成功";
+            }else{
+                return "修改失败";
+            }
+        }else{
+            return "所修改的标签不存在";
+        }
+
     }
 
     /**

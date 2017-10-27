@@ -99,14 +99,28 @@
 
                 function editName(obj) {
                     objj = obj;
-                    var tagInput = objj.parentElement.parentElement.children[1].children[0].children[0];
+                    var tagInput = objj.parentElement.parentElement.children[1].children[1].children[0];
                     tagInput.removeAttribute('disabled');
                     tagInput.focus();
                 }
 
-                //回车 onchange  离开 onblur
+                //回车 onchange  离开 onblur 同时监听会导致重复发送 所以去掉  onblur="updateName(this)"
                 function updateName(obj) {
                     obj.setAttribute("disabled",true);
+                    var data = {};
+                    data.id = obj.parentElement.parentElement.children[0].value;
+                    data.name = obj.value;
+                    data.questionIdList = [];
+                    $.ajax({
+                        type: 'POST',
+                        url: "/admin/tagupdate",
+                        contentType : 'application/json',//必须有 不然就成了表单
+                        data: JSON.stringify(data),
+                        success: function (data, textStatus) {
+                            alert(data);
+                        },
+                        dataType: "json"
+                    });
 
                 }
             </script>
@@ -129,7 +143,12 @@
                         <tr th:each="tag,tstat:${tagList}">
                             <td th:if="${#strings.length(tag.getId())>6}" th:text="${#strings.substring(tag.getId(),0,6)}">1,001</td>
                             <td th:if="${#strings.length(tag.getId())<=6}" th:text="${tag.getId()}"></td>
-                            <td ><strong><input name="tagName" th:value="${tag.getName()}"  type="text" disabled class="input-sm "  onblur="updateName(this)" onchange="updateName(this)"/></strong></td>
+                            <td >
+                                <input name="tagName" th:value="${tag.getId()}"  type="hidden" class="hidden "/>
+                                <strong>
+                                    <input name="tagName" th:value="${tag.getName()}"  type="text" disabled class="input-sm "  onchange="updateName(this)"/>
+                                </strong>
+                            </td>
                             <td th:text="${tag.getQuestionIdList().size()}">0</td>
                             <td>
                                 <a class="btn  btn-info" th:href="@{'/admin/question/'+${tag.getId()}+'/1'}" role="button">问题列表</a>
