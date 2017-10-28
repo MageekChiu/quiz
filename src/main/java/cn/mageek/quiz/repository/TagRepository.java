@@ -24,4 +24,6 @@ public interface TagRepository extends MongoRepository<Tag,String> {
     @Override
     void delete(Tag tag);
 
+    List<Tag> findAllByQuestionIdListContains(String questionID);
+
 }

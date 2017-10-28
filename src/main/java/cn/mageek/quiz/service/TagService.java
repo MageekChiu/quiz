@@ -28,5 +28,6 @@ public interface TagService {
 
     Tag updateNameById(String ID,String name);
 
+    List<Tag> findByQuestionID(String questionID);
 
 }

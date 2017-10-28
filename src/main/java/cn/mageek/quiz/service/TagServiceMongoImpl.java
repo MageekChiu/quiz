@@ -151,5 +151,10 @@ public class TagServiceMongoImpl implements TagService {
         return mongoTemplate.findAndModify(Query.query(Criteria.where("id").is(ID)), Update.update("name",name),Tag.class);
     }
 
+    @Override
+    public List<Tag> findByQuestionID(String questionID) {
+        return tagRepository.findAllByQuestionIdListContains(questionID);
+    }
+
 
 }

@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Administrator
@@ -30,6 +32,9 @@ public class QuestionServiceMongoImpl implements QuestionService{
 
     private final QuestionRepository questionRepository;
     private final MongoTemplate mongoTemplate;
+
+    @Autowired
+    private TagService tagService;
 
     @Autowired
     public QuestionServiceMongoImpl(QuestionRepository questionRepository,MongoTemplate mongoTemplate) {
@@ -84,6 +89,7 @@ public class QuestionServiceMongoImpl implements QuestionService{
     public Question delByID(String id) {
         Question question = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)),Question.class);
         //TODO 检查对应的标签
+
         return  question;
     }
 
@@ -94,8 +100,18 @@ public class QuestionServiceMongoImpl implements QuestionService{
 
     @Override
     public Question save(Question question) {
+        Question question1 = questionRepository.save(question);
         //TODO 检查对应的标签
-        return questionRepository.save(question);
+        List<Tag> tagList = tagService.findByQuestionID(question.getId());//原先包含这个问题的所有标签
+        tagList.sort(Comparator.comparing(Tag::getName));//按照标签名字排序
+        List<String> tagNamesbefore = tagList.stream().map(Tag::getName).collect(Collectors.toList());//原先包含这个问题的所有标签的名字
+        List<String> tagNamesNow = question1.getTag();//现在这个问题的所有标签
+        tagNamesNow.sort(String::compareTo);//按照名字排序
+        for (String tagName : tagNamesNow) {
+
+        }
+
+        return question1;
     }
 
 
