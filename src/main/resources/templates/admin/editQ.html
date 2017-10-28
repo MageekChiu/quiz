@@ -63,22 +63,108 @@
                <span th:text="${msg}"></span>
             </div>
 
-            <form>
+            <script>
+                var objj = '' ;//全局变量 便于直接在控制台调试，获得浏览器提示
+                $(document).ready(function(){
+                    var MaxInputs       = 10; //maximum input boxes allowed
+                    var InputsWrapper   = $("#tagNameListArea"); //Input boxes wrapper ID
+                    var addTagBox   = $("#addTagBox"); //Input boxes wrapper ID
+                    var x = InputsWrapper.length; //initlal text box count
+                    var FieldCount=1; //to keep track of text box added
+
+                    addTagBox.click(
+                        function addBox()  //on add input button click
+                        {
+                            if(x <= MaxInputs) //max input box allowed
+                            {
+                                FieldCount++; //text box added increment
+                                InputsWrapper.append('<div style="margin-top: 5px"><input type="text" class="input-sm" name="tagNames" placeholder="输入标签名" required="required" /> <input class="btn btn-danger btn-sm removeTag" value="删除本条"/></div>');
+                                x++; //text box increment
+                            }else{
+                                alert("超过最大限制");
+                            }
+                            return false;
+                        }
+                    );
+                    $("body").on("click",".removeTag", function(e){ //user click on remove text
+//                        alert('删除');
+                        if( x > 1 ) {//至少保留一个
+                            $(this).parent('div').remove(); //remove text box
+                            x--; //decrement textbox
+                        }
+                        return false;
+                    });
+
+                    $("#addOptionBox").click(
+                        function addBox()  //on add input button click
+                        {
+                            $("#optionListArea").append(' <div style="margin-top: 5px"><input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" /><input class="btn btn-warning btn-sm removeOption"  value="删除本条"/></div>');
+                        }
+                    );
+                    $("body").on("click",".removeOption", function(e){ //user click on remove text
+                            $(this).parent('div').remove(); //remove text box
+                    });
+
+                });
+            </script>
+
+            <form method="post" th:action="@{/admin/questionedit}">
                 <!--/*@thymesVar id="question" type="cn.mageek.quiz.entity.Question"*/-->
                 <span  th:if="${question==null}">
                     <label for="editor">添加问题：</label>
-                    <textarea id='editor' data-provide="markdown" style='color:#000'>
+                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' >
                     </textarea>
                     <br>
-                    <input type="text" class="input-lg bg-success text-primary" name="tag" placeholder="标签"/>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="单选" /> 单选 </label>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="多选" /> 多选 </label>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="简答"/> 简答 </label>
+                    <br>
+                     <p><a class="btn btn-lg btn-primary" role="button" id="addTagBox">添加标签</a></p>
+                    <div id="tagNameListArea">
+                        <div style="margin-top: 5px" >
+                            <input type="text" class="input-sm" name="tagNames" placeholder="输入标签名" required="required"/>
+                            <input class="btn btn-danger btn-sm removeTag"  value="删除本条"/>
+                        </div>
+                    </div>
+                    <br>
+                    <p><a class="btn btn-lg btn-info" role="button" id="addOptionBox">添加待选项</a></p>
+                    <div id="optionListArea">
+                        <div style="margin-top: 5px" >
+                            <input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" th:value="${option}" />
+                            <input class="btn btn-warning btn-sm removeOption"  value="删除本条"/>
+                        </div>
+                    </div>
+                    <br>
+                    <label>答案：<input type="text" placeholder="简答直接输入答案，选择输入答案序号，多个答案用|隔开 如 0|1|2 " class="input-lg" name="answer" /></label>
+                    <input type="hidden" name="id" value="-1"/>
+
                 </span>
                 <span th:if="${question!=null}">
                     <label for="editor">修改问题：</label>
-                    <textarea id='editor' data-provide="markdown" style='color:#000' th:text="${question.getTitle()}">
+                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' th:text="${question.getTitle()}">
                     </textarea>
                     <br>
-                    <label>标签：</label>
-                    <input type="text" class="input-lg bg-success text-primary" name="tag" placeholder="标签" th:value="${question.getTagAsString()}"/>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="单选" th:checked="${question.getType()=='单选'}" /> 单选 </label>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="多选" th:checked="${question.getType()=='多选'}"/> 多选 </label>
+                    <label><input name="type" class="radio-inline input-group-lg" type="radio" value="简答" th:checked="${question.getType()=='简答'}"/> 简答 </label>
+                    <br>
+                     <p><a class="btn btn-lg btn-primary" role="button" id="addTagBox">添加标签</a></p>
+                    <div id="tagNameListArea">
+                        <div style="margin-top: 5px" th:each="tag:${question.getTag()}">
+                            <input type="text" class="input-sm" name="tagNames" placeholder="输入标签名" required="required" th:value="${tag}" />
+                            <input class="btn btn-danger btn-sm removeTag"  value="删除本条"/>
+                        </div>
+                    </div>
+                    <br>
+                    <p><a class="btn btn-lg btn-info" role="button" id="addOptionBox">添加待选项</a></p>
+                    <div id="optionListArea">
+                        <div style="margin-top: 5px" th:each="option,stat:${question.getOption()}">
+                            <label th:text="${stat.index+' : '}"> </label> <input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" th:value="${option}" />
+                            <input class="btn btn-warning btn-sm removeOption"  value="删除本条"/>
+                        </div>
+                    </div>
+                    <br>
+                    <label>答案：<input type="text" placeholder="简答字节输入答案，选择输入答案序号，多个答案用|隔开 如 0|1|2 " class="input-lg" name="answer" th:value="${question.getAnswer()}"/></label>
                     <input type="hidden" name="id" th:value="${question.getId()}"/>
                 </span>
                 <hr>

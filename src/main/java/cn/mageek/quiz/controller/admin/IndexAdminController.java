@@ -155,27 +155,47 @@ public class IndexAdminController {
         return "admin/editQ";
     }
 
-    /** 修改问题 检查标签
-     * @param model
+    /** 修改问题，或者添加问题 检查标签
      * @return
      */
-    @RequestMapping(value = {"/questionedit/{quesID}"})
-    public String quesEdit(@PathVariable String quesID ,Model model){
-        Question question = questionService.findByID(quesID);
-        model.addAttribute("question",question);
-        return "admin/edit";
+    @RequestMapping(value = {"/questionedit"})
+    public String quesEdit(String id,String title,String type,String[] tagNames,String[] options,String answer,Model model){
+        logger.debug("question  id:{},title:{}",id,title);
+
+        if("-1".equals(id)){//添加问题
+            Question question = new Question();
+            question.setTitle(title);
+            question.setType(type);
+            question.setTag(new LinkedList<>(Arrays.asList(tagNames)));
+            question.setOption(new LinkedList<>(Arrays.asList(options)));
+            question.setAnswer(answer);
+            question = questionService.save(question);
+            if (question!=null){
+                model.addAttribute("question",question);
+                model.addAttribute("msg","添加成功");
+            }else{
+                model.addAttribute("msg","添加失败");
+            }
+            return "admin/editQ";
+        }else{//修改问题
+            Question question = new Question();
+            question.setId(id);
+            question.setTitle(title);
+            question.setType(type);
+            question.setTag(new LinkedList<>(Arrays.asList(tagNames)));
+            question.setOption(new LinkedList<>(Arrays.asList(options)));
+            question.setAnswer(answer);
+            question = questionService.save(question);
+            if (question!=null){
+                model.addAttribute("question",question);
+                model.addAttribute("msg","修改成功");
+            }else{
+                model.addAttribute("msg","修改失败");
+            }
+        }
+        return "admin/editQ";
     }
 
-    /**
-     * 添加问题，检查标签，若无则新增标签
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = {"/questionadd"})
-    public String quesAdd(@PathVariable String quesID, Model model){
-        model.addAttribute("message","");
-        return "admin/index";
-    }
 
     /**
      * 展示用户列表

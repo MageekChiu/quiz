@@ -18,4 +18,6 @@ public interface QuestionService {
     Question delByID(String id);
 
     Question findByID(String id);
+
+    Question save(Question question);
 }

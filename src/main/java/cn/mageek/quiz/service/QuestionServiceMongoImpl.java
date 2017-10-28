@@ -92,5 +92,11 @@ public class QuestionServiceMongoImpl implements QuestionService{
         return questionRepository.findOne(id);
     }
 
+    @Override
+    public Question save(Question question) {
+        //TODO 检查对应的标签
+        return questionRepository.save(question);
+    }
+
 
 }
