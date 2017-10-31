@@ -26,4 +26,6 @@ public interface TagRepository extends MongoRepository<Tag,String> {
 
     List<Tag> findAllByQuestionIdListContains(String questionID);
 
+    Tag findDistinctFirstByName(String name);
+
 }

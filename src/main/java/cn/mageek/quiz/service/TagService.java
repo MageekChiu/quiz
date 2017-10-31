@@ -30,4 +30,6 @@ public interface TagService {
 
     List<Tag> findByQuestionID(String questionID);
 
+    Tag saveOrReturn(Tag tag);
+
 }

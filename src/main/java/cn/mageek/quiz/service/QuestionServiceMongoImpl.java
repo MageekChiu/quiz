@@ -16,10 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,7 +86,8 @@ public class QuestionServiceMongoImpl implements QuestionService{
     public Question delByID(String id) {
         Question question = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)),Question.class);
         //TODO 检查对应的标签
-
+        List<Tag> tagList = tagService.findByQuestionID(question.getId());//原先包含这个问题的所有标签
+        tagList.stream().map((tag)->tag.getQuestionIdList().remove(id));//删除这个里面的这个问题
         return  question;
     }
 
@@ -98,6 +96,12 @@ public class QuestionServiceMongoImpl implements QuestionService{
         return questionRepository.findOne(id);
     }
 
+
+    /**
+     * 保存或更新question
+     * @param question Question
+     * @return
+     */
     @Override
     public Question save(Question question) {
         Question question1 = questionRepository.save(question);
@@ -107,8 +111,25 @@ public class QuestionServiceMongoImpl implements QuestionService{
         List<String> tagNamesbefore = tagList.stream().map(Tag::getName).collect(Collectors.toList());//原先包含这个问题的所有标签的名字
         List<String> tagNamesNow = question1.getTag();//现在这个问题的所有标签
         tagNamesNow.sort(String::compareTo);//按照名字排序
-        for (String tagName : tagNamesNow) {
+        for (int i = 0;i<tagNamesbefore.size();i++){
+            logger.debug("before:{}",tagNamesbefore.get(i));
+            if (!tagNamesNow.contains(tagNamesbefore.get(i))){//删除对应标签里面的id
+                Tag tag  = tagList.get(i);
+                tag.getQuestionIdList().remove(i);
+                tagService.save(tag);
+            }
+        }
 
+        for (int i=0;i<tagNamesNow.size();i++){
+            logger.debug("now:{}",tagNamesNow.get(i));
+            String newTagName = tagNamesNow.get(i);
+            if (!tagNamesbefore.contains(newTagName)){//添加新增的标签
+                List<Tag> tagList1 = tagService.createByTagNameList(Arrays.asList(newTagName));
+                Tag tag = tagList1.get(0);
+                logger.debug("新增:{},id:{}",newTagName,tag);
+                tag.getQuestionIdList().add(question1.getId());
+                tagService.save(tag);
+            }
         }
 
         return question1;

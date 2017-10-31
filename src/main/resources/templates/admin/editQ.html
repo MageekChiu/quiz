@@ -69,7 +69,7 @@
                     var MaxInputs       = 10; //maximum input boxes allowed
                     var InputsWrapper   = $("#tagNameListArea"); //Input boxes wrapper ID
                     var addTagBox   = $("#addTagBox"); //Input boxes wrapper ID
-                    var x = InputsWrapper.length; //initlal text box count
+                    var x = InputsWrapper.children().length; //initlal text box count
                     var FieldCount=1; //to keep track of text box added
 
                     addTagBox.click(
@@ -150,16 +150,25 @@
                     <br>
                      <p><a class="btn btn-lg btn-primary" role="button" id="addTagBox">添加标签</a></p>
                     <div id="tagNameListArea">
-                        <div style="margin-top: 5px" th:each="tag:${question.getTag()}">
+                        <div style="margin-top: 5px" th:if="${question.getTag().size()>0}" th:each="tag:${question.getTag()}">
                             <input type="text" class="input-sm" name="tagNames" placeholder="输入标签名" required="required" th:value="${tag}" />
+                            <input class="btn btn-danger btn-sm removeTag"  value="删除本条"/>
+                        </div>
+                        <div style="margin-top: 5px" th:if="${question.getTag().size()<1}">
+                            <input type="text" class="input-sm" name="tagNames" placeholder="输入标签名" required="required" />
                             <input class="btn btn-danger btn-sm removeTag"  value="删除本条"/>
                         </div>
                     </div>
                     <br>
                     <p><a class="btn btn-lg btn-info" role="button" id="addOptionBox">添加待选项</a></p>
                     <div id="optionListArea">
-                        <div style="margin-top: 5px" th:each="option,stat:${question.getOption()}">
+                        <div style="margin-top: 5px" th:if="${question.getOption().size()>0}" th:each="option,stat:${question.getOption()}">
                             <label th:text="${stat.index+' : '}"> </label> <input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" th:value="${option}" />
+                            <input class="btn btn-warning btn-sm removeOption"  value="删除本条"/>
+                        </div>
+
+                        <div style="margin-top: 5px" th:if="${question.getOption().size()<1}" >
+                            <label > </label> <input type="text" class="input-sm" name="options" placeholder="输入待选项" />
                             <input class="btn btn-warning btn-sm removeOption"  value="删除本条"/>
                         </div>
                     </div>

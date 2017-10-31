@@ -130,7 +130,15 @@ public class TagServiceMongoImpl implements TagService {
 
     @Override
     public Tag save(Tag tag) {
-        return tagRepository.save(tag);
+        return tagRepository.save(tag);//重复name创建会报duplicate错误，但是对于同一id会采取更新策略
+//        return mongoTemplate.upsert()
+    }
+
+    //如果name存在直接返回，否则创建
+    @Override
+    public  Tag saveOrReturn(Tag tag){
+        Tag oldTag = tagRepository.findDistinctFirstByName(tag.name);
+        return  oldTag ==null ? save(tag):oldTag;
     }
 
     @Override
@@ -139,7 +147,7 @@ public class TagServiceMongoImpl implements TagService {
             Tag tag = new Tag();
             tag.setName(tagName);
             tag.setQuestionIdList(new LinkedList<>());
-            return save(tag);
+            return saveOrReturn(tag);
 
         }).collect(Collectors.toList());
 
