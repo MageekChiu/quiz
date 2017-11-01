@@ -98,7 +98,7 @@
                     $("#addOptionBox").click(
                         function addBox()  //on add input button click
                         {
-                            $("#optionListArea").append(' <div style="margin-top: 5px"><input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" /><input class="btn btn-warning btn-sm removeOption"  value="删除本条"/></div>');
+                            $("#optionListArea").append(' <div style="margin-top: 5px"><input type="text" class="input-sm" name="options" placeholder="输入待选项"  /><input class="btn btn-warning btn-sm removeOption"  value="删除本条"/></div>');
                         }
                     );
                     $("body").on("click",".removeOption", function(e){ //user click on remove text
@@ -112,8 +112,7 @@
                 <!--/*@thymesVar id="question" type="cn.mageek.quiz.entity.Question"*/-->
                 <span  th:if="${question==null}">
                     <label for="editor">添加问题：</label>
-                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' >
-                    </textarea>
+                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' ></textarea>
                     <br>
                     <label><input name="type" class="radio-inline input-group-lg" type="radio" value="单选" /> 单选 </label>
                     <label><input name="type" class="radio-inline input-group-lg" type="radio" value="多选" /> 多选 </label>
@@ -130,7 +129,7 @@
                     <p><a class="btn btn-lg btn-info" role="button" id="addOptionBox">添加待选项</a></p>
                     <div id="optionListArea">
                         <div style="margin-top: 5px" >
-                            <input type="text" class="input-sm" name="options" placeholder="输入待选项" required="required" th:value="${option}" />
+                            <input type="text" class="input-sm" name="options" placeholder="输入待选项"  th:value="${option}" />
                             <input class="btn btn-warning btn-sm removeOption"  value="删除本条"/>
                         </div>
                     </div>
@@ -141,8 +140,7 @@
                 </span>
                 <span th:if="${question!=null}">
                     <label for="editor">修改问题：</label>
-                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' th:text="${question.getTitle()}">
-                    </textarea>
+                    <textarea id='editor' name="title" data-provide="markdown" style='color:#000' th:text="${question.getTitle()}"></textarea>
                     <br>
                     <label><input name="type" class="radio-inline input-group-lg" type="radio" value="单选" th:checked="${question.getType()=='单选'}" /> 单选 </label>
                     <label><input name="type" class="radio-inline input-group-lg" type="radio" value="多选" th:checked="${question.getType()=='多选'}"/> 多选 </label>

@@ -111,6 +111,7 @@ public class QuestionServiceMongoImpl implements QuestionService{
         List<String> tagNamesbefore = tagList.stream().map(Tag::getName).collect(Collectors.toList());//原先包含这个问题的所有标签的名字
         List<String> tagNamesNow = question1.getTag();//现在这个问题的所有标签
         tagNamesNow.sort(String::compareTo);//按照名字排序
+        logger.debug("before num : {},after num:{}",tagNamesbefore.size(),tagNamesNow.size());
         for (int i = 0;i<tagNamesbefore.size();i++){
             logger.debug("before:{}",tagNamesbefore.get(i));
             if (!tagNamesNow.contains(tagNamesbefore.get(i))){//删除对应标签里面的id
@@ -121,13 +122,13 @@ public class QuestionServiceMongoImpl implements QuestionService{
         }
 
         for (int i=0;i<tagNamesNow.size();i++){
-            logger.debug("now:{}",tagNamesNow.get(i));
             String newTagName = tagNamesNow.get(i);
-            if (!tagNamesbefore.contains(newTagName)){//添加新增的标签
+            logger.debug("now:{}",newTagName);
+            if (tagNamesbefore.size()<1 || !tagNamesbefore.contains(newTagName)){//添加新增的标签
                 List<Tag> tagList1 = tagService.createByTagNameList(Arrays.asList(newTagName));
                 Tag tag = tagList1.get(0);
-                logger.debug("新增:{},id:{}",newTagName,tag);
                 tag.getQuestionIdList().add(question1.getId());
+                logger.debug("新增:{},id:{},qid:{}",newTagName,tag,tag.getQuestionIdList().get(0));
                 tagService.save(tag);
             }
         }

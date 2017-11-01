@@ -130,7 +130,7 @@ public class TagServiceMongoImpl implements TagService {
 
     @Override
     public Tag save(Tag tag) {
-        return tagRepository.save(tag);//重复name创建会报duplicate错误，但是对于同一id会采取更新策略
+        return tagRepository.save(tag);//重复name创建会报duplicate错误，但是对于同一id,亦即主键会采取更新策略，不会检查unique键
 //        return mongoTemplate.upsert()
     }
 
