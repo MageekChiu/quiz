@@ -60,7 +60,7 @@
             <!--/*@thymesVar id="msg" type="java.lang.String"*/-->
             <div class="alert alert-warning" th:if="${msg}">
                 <a href="#" class="close" data-dismiss="alert"> &times; </a>
-               <span th:text="${msg}"></span>
+               <span th:text="${msg}"></span> - <span><a th:href="@{/admin/questionshow/-1}">添加问题</a></span>
             </div>
 
             <script>
