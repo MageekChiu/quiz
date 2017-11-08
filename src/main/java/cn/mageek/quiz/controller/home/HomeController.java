@@ -77,6 +77,7 @@ public class HomeController {
             infoModel.setAvg(0);
             infoModel.setQuestionList(questionList);
         }else{//做过试卷
+            int interviewNum = 0;
             infoModel.setHistory(true);
             double avg = 0;
             for (int i =0;i<paperSize;i++){
@@ -86,9 +87,14 @@ public class HomeController {
                         questionList.add(paper.getQuestions().get(j));
                     }
                 }
-                avg += paper.getPoint();
+                if(!"脑筋急转弯".equals(paper.getQuestions().get(0).getTag().get(0)) && !"智力测试".equals(paper.getQuestions().get(0).getTag().get(0)) ){
+                    avg += paper.getPoint();
+                    interviewNum += 1;
+                }
+                logger.debug("interviewNum:{}",interviewNum);
+
             }
-            infoModel.setAvg(avg/paperSize);
+            infoModel.setAvg(avg/(interviewNum));
             //注意要去重
             infoModel.setQuestionList(questionList.stream().distinct().collect(Collectors.toList()));
         }
@@ -197,10 +203,8 @@ public class HomeController {
         // 这里也要防止重复提交，交给服务层去做
         httpSession.removeAttribute("paperRecent");//提交一个试卷后才允许再创建试卷
         logger.debug(result);
-        Paper paperSaved = paperService.process(result);
         User user = userService.findByUsername(principal.getName());
-        user.getPapers().add(paperSaved);
-        userService.save(user);//保存用户
+        Paper paperSaved = paperService.process(result,user);
         model.addAttribute("paper",paperSaved);
         return "home/paper";
     }

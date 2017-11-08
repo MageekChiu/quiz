@@ -6,6 +6,8 @@ import cn.mageek.quiz.entity.User;
 import cn.mageek.quiz.repository.PaperRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,7 @@ import java.security.Principal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Administrator
@@ -25,10 +24,13 @@ import java.util.Map;
 @Service("articleService")
 public class PaperServiceMongoImpl implements PaperService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final PaperRepository articleRepository;
     private final PaperRepository paperRepository;
     private final UserService userService;
     private final TagService tagService;
+
     @Autowired
     public PaperServiceMongoImpl(PaperRepository articleRepository,UserService userService,TagService tagService,PaperRepository paperRepository) {
         this.articleRepository = articleRepository;
@@ -42,7 +44,7 @@ public class PaperServiceMongoImpl implements PaperService {
         //TODO 检查是否没有question 不然模板会报错
         Paper paper = tagService.getPaperByTags(tagList);//生成试卷题目
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");//修改时间格式
-        paper.setTitle(principal.getName()+"--"+dtf.format(paper.getCreateTime()));//修改名字
+        paper.setTitle(principal.getName()+"#"+dtf.format(paper.getCreateTime()));//修改名字
         Paper paperSaved = save(paper);//存入paper
         User user = userService.findByUsername(principal.getName());//找到用户
         user.getPapers().add(paperSaved);//试卷存入所属用户
@@ -66,7 +68,7 @@ public class PaperServiceMongoImpl implements PaperService {
      * @return
      */
     @Override
-    public Paper process(String result) {
+    public Paper process(String result,User user) {
         Map<String,String> map = new HashMap<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -105,7 +107,14 @@ public class PaperServiceMongoImpl implements PaperService {
             Duration duration = java.time.Duration.between(paper.getCreateTime(), LocalDateTime.now());
             paper.setSeconds((int) (duration.toMillis()/1000));
             //接下来保存试卷
-            Paper paperSaved = paperRepository.save(paper);
+            Paper paperSaved = save(paper);
+            List<Paper> paperList = user.getPapers();
+            logger.debug("删除前:{}",paperList.size());
+            paperList.removeIf(x -> x.getId().equals(paperSaved.getId()));//删除原有的试卷
+            paperList.add(paperSaved);
+            logger.debug("删除后:{}",paperList.size());
+            user.setPapers(paperList);//保存新的试卷
+            userService.save(user);//保存用户
             return paperSaved;
         }else{
             return null;

@@ -140,7 +140,7 @@
 
     <div class="alert alert-success" th:if="*{isHistory()}">
         <a href="#" class="close" data-dismiss="alert"> &times; </a>
-        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，平均分：<strong th:text="*{#numbers.formatDecimal(getAvg(),1,2)}"></strong>。下面是一些例子。
+        你好，你目前做了<strong th:text="*{getPaperNum()}">0</strong>套试卷，去除智力测试和脑筋急转弯的测试卷，平均分：<strong th:text="*{#numbers.formatDecimal(getAvg(),1,2)}"></strong>。下面是一些例子。
     </div>
 
     <div class="alert alert-warning" th:if="*{ !isHistory()}">
@@ -197,6 +197,8 @@
             <p><a class="btn btn-lg btn-warning" th:href="@{/me/turn}" role="button">马上开始转弯</a></p>
         </div>
     </div>
+    <br>
+    <div class="text-center text-danger"><h3>请注意，系统暂不支持非选择题自动判分，默认您的答案是错误的，请自行对比并纠正分数</h3> </div>
 
     <hr class="featurette-divider" />
     <footer>
