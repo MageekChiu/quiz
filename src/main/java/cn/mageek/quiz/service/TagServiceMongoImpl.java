@@ -121,10 +121,18 @@ public class TagServiceMongoImpl implements TagService {
 
     @Override
     public Tag delByID(String tagID){
-//        return mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(tagID)), Tag.class);//
-//        return mongoTemplate.findAndRemove(Query.query(Criteria.where("_id").is(tagID)), Tag.class);//
-        Tag tag =  mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(tagID)), Tag.class);//上面之所以删不掉是因为我收工录入的数据 id 是 int32
-        //todo 检查对应的question
+        Tag tag = mongoTemplate.findOne(Query.query(Criteria.where("id").is(tagID)), Tag.class);
+        //没有对应标签
+        if (tag == null){
+            return null;
+        }
+        // 还有问题存在 禁止删除标签
+        if(tag.getQuestionIdList().size()>0){
+            tag.setName("禁止删除");
+        }else{
+            mongoTemplate.remove(Query.query(Criteria.where("id").is(tagID)), Tag.class);
+            tag.setName("删除成功");
+        }
         return tag;
     }
 

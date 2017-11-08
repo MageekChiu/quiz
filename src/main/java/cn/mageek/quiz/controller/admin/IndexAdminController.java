@@ -44,13 +44,12 @@ public class IndexAdminController {
     }
 
     /**
-     * 展示标签列表
-     * @param name
-     * @param model
-     * @return
+     * 展示标签列表 也是首页
+     * @param model 模型
+     * @return 模板
      */
     @RequestMapping(value = {"","/","/tag"})
-    public String tagList(@RequestParam(name = "name",defaultValue = "脑筋急转弯") String name,Model model){
+    public String tagList(Model model){
         List<Tag> tagList = tagService.findAll();
         model.addAttribute("tagList",tagList);
         return "admin/index";
@@ -58,20 +57,16 @@ public class IndexAdminController {
 
 
     /**
-     * 删除标签，但是删除问题的时候要检查该问题已经没有其他标签了 否则不能删除
-     * @param tagID
-     * @param redirectAttributes
-     * @return
+     * 删除标签，确定该标签没有对应的问题才能删除 否则不能删除
+     * @param tagID 标签ID
+     * @param redirectAttributes 重定向属性
+     * @return 重定向URL
      */
     @RequestMapping(value = {"/tagdel/{tagID}"})
     public String tagDel(@PathVariable String tagID,final RedirectAttributes redirectAttributes){
 
-
         Tag tag =  tagService.delByID(tagID);
-
-//        logger.debug("tagID:{},tag:{}",tagID,tag!=null?tag.toString():"null");
-
-        redirectAttributes.addFlashAttribute("msg",tag==null?"删除失败":"删除成功");
+        redirectAttributes.addFlashAttribute("msg",tag==null?"未找到对应标签":tag.getName());
         return "redirect:/admin";
 
     }
