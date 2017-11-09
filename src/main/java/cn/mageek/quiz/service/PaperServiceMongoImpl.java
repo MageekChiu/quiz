@@ -41,7 +41,6 @@ public class PaperServiceMongoImpl implements PaperService {
 
     @Override
     public Paper getPaperTransaction(List<String> tagList, Principal principal) {
-        //TODO 检查是否没有question 不然模板会报错
         Paper paper = tagService.getPaperByTags(tagList);//生成试卷题目
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");//修改时间格式
         paper.setTitle(principal.getName()+"#"+dtf.format(paper.getCreateTime()));//修改名字

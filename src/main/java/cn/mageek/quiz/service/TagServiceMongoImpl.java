@@ -28,6 +28,8 @@ public class TagServiceMongoImpl implements TagService {
     private final QuestionRepository questionRepository;
     private final MongoTemplate mongoTemplate;
 
+    private static int TAG_MAX_NUM = 20;
+
     @Autowired
     public TagServiceMongoImpl(TagRepository tagRepository,QuestionRepository questionRepository,MongoTemplate mongoTemplate) {
         this.tagRepository = tagRepository;
@@ -37,7 +39,7 @@ public class TagServiceMongoImpl implements TagService {
 
     /**
      * 查找所有标签
-     * @return
+     * @return tagList
      */
     @Override
     public List<Tag> findAll(){
@@ -46,7 +48,7 @@ public class TagServiceMongoImpl implements TagService {
 
     /**
      * 查找笔试面试题的标签，亦即除去"脑筋急转弯","智力测试"
-     * @return
+     * @return tagList
      */
     @Override
     public List<Tag> findInterview() {
@@ -54,34 +56,35 @@ public class TagServiceMongoImpl implements TagService {
     }
 
     /**
-     * 根据标签列表得出一套试卷
+     * 根据标签列表得出一套试卷,这里不确定试卷名称
      * @param tags
      * @return
      */
     @Override
     public Paper getPaperByTags(List<String> tags){
-        Paper paper = new Paper();
-        if (tags.size()>20){//最多只取20个标签
-            tags = tags.subList(0,20);
+        //最多只取 TAG_MAX_NUM 个标签
+        if (tags.size()>TAG_MAX_NUM){
+            tags = tags.subList(0,TAG_MAX_NUM);
         }
-
         List<Question> questionAllList = new LinkedList<>();
         List<Question> questionList;
-
         for (String tag:tags){
-            questionList = questionRepository.findByTag(tag);//该标签所有的
-            questionAllList.addAll(questionList.subList(0, Math.min(questionList.size(), 20)));//该标签取最多20个
+            //该标签所有的
+            questionList = questionRepository.findByTag(tag);
+            //该标签取最多20个
+            questionAllList.addAll(questionList.subList(0, Math.min(questionList.size(), TAG_MAX_NUM)));
         }
-
         //去重
         List<Question> questionUniqList = questionAllList.stream().distinct().collect(Collectors.toList());
         //打乱
         Collections.shuffle(questionUniqList);
-        //最多取20道题
+        //最后，最多取20道题
         questionUniqList =  questionUniqList.subList(0, Math.min(questionUniqList.size(), 20));
-        if (questionUniqList.size()<1){//防止为空
+        //防止为空,避免controller检查
+        if (questionUniqList.size()<1){
             questionUniqList.add(new Question());
         }
+        Paper paper = new Paper();
         paper.setQuestions(questionUniqList);
         paper.setCreateTime(LocalDateTime.now());
         return paper;

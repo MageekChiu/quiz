@@ -14,11 +14,9 @@ import java.util.List;
  */
 public interface TagRepository extends MongoRepository<Tag,String> {
 
-    @Override
-    List<Tag> findAll();
 
     /**
-     * //不需要 override 直接用就行了 但是这个删除无法确定是否删除成功
+     * 不需要 override 直接用就行了 但是这个删除无法确定是否删除成功
      * @param tag
      */
     @Override
