@@ -8,6 +8,7 @@ import cn.mageek.quiz.repository.QuestionRepository;
 import cn.mageek.quiz.repository.TagRepository;
 import cn.mageek.quiz.vo.DataPageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
@@ -90,38 +91,55 @@ public class TagServiceMongoImpl implements TagService {
         return paper;
     }
 
+    /**
+     * 获得特定标签的问题列表
+     * @param tag 标签名字
+     * @param page 页数 从0 开始 但是页面上是从1开始的，所以返回要加1
+     * @param pageSize 页面列表数量
+     * @return
+     */
     @Override
     public DataPageable<Question> getQuestionListByTag(String tag, int page, int pageSize) {
         DataPageable<Question> questionDataPageable = new DataPageable<>();
-//        List<String> questionIdList = mongoTemplate.find();//获得该标签下所有的ID list,不能这样查，只能像下面这样一次拿出一个文档
         Tag tag1 = mongoTemplate.findOne( new Query(Criteria.where("name").is(tag)),Tag.class);
         List<String> questionIdList = tag1.getQuestionIdList();
-        questionDataPageable.setAllNUm(questionIdList.size());//总数
-        questionDataPageable.setNumPage(pageSize);//每页条数
-        questionDataPageable.setAllPage((int) Math.ceil(questionDataPageable.getAllNUm()/pageSize));//总页数
-        questionDataPageable.setCurPage(page+1);//当前页
+        questionDataPageable.setAllNUm(questionIdList.size());
+        questionDataPageable.setNumPage(pageSize);
+        questionDataPageable.setAllPage((int) Math.ceil(questionDataPageable.getAllNUm()/pageSize));
+        questionDataPageable.setCurPage(page+1);
         questionDataPageable.setType(tag);
         //防止超出界限
         int fromINdex = page*pageSize ;
         if (fromINdex>questionDataPageable.getAllNUm()){
-            questionDataPageable.setCurPage(-1);//打标记
+            //打标记
+            questionDataPageable.setCurPage(-1);
             questionDataPageable.setContentList(new ArrayList<>());
             questionDataPageable.generatePageList();//生成分页列表避免模板解析错误
             return questionDataPageable;
         }
         int toIndex = questionDataPageable.getAllNUm()<(page+1)*pageSize?questionDataPageable.getAllNUm():(page+1)*pageSize;
-        questionIdList = questionIdList.subList(fromINdex,toIndex);//List 分页
+        //获得本页的id列表
+        questionIdList = questionIdList.subList(fromINdex,toIndex);
         List<Question> questionList = mongoTemplate.find(new Query(Criteria.where("id").in(questionIdList)),Question.class);
         questionDataPageable.setContentList(questionList);
-        questionDataPageable.generatePageList();//生成分页列表
+        questionDataPageable.generatePageList();
         return questionDataPageable;
     }
 
+    /**
+     * 直接删除 没有反馈
+     * @param tagID 标签ID
+     */
     @Override
     public void delete(String tagID){
         tagRepository.delete(tagID);
     }
 
+    /**
+     * 检查删除的合理性
+     * @param tagID 标签ID
+     * @return 标签 或者 null
+     */
     @Override
     public Tag delByID(String tagID){
         Tag tag = mongoTemplate.findOne(Query.query(Criteria.where("id").is(tagID)), Tag.class);
@@ -141,35 +159,47 @@ public class TagServiceMongoImpl implements TagService {
 
     @Override
     public Tag save(Tag tag) {
-        return tagRepository.save(tag);//重复name创建会报duplicate错误，但是对于同一id,亦即主键会采取更新策略，不会检查unique键
-//        return mongoTemplate.upsert()
+        // 重复name创建会报duplicate错误，但是对于同一id,亦即主键会采取更新策略，不会检查unique键
+        return tagRepository.save(tag);
     }
 
-    //如果name存在直接返回，否则创建
+    // 如果name存在直接返回，否则创建
     @Override
     public  Tag saveOrReturn(Tag tag){
         Tag oldTag = tagRepository.findDistinctFirstByName(tag.name);
         return  oldTag ==null ? save(tag):oldTag;
     }
 
+    /**
+     * 根据名字创建一系列标签
+     * @param tagNameList
+     * @return
+     */
     @Override
     public List<Tag> createByTagNameList(List<String> tagNameList){
-        List<Tag> tagList = tagNameList.stream().map(tagName -> {
+
+        return tagNameList.stream().map(tagName -> {
             Tag tag = new Tag();
             tag.setName(tagName);
             tag.setQuestionIdList(new LinkedList<>());
             return saveOrReturn(tag);
 
         }).collect(Collectors.toList());
-
-        return  tagList;
     }
 
     @Override
-    public Tag updateNameById(String ID, String name){
-        return mongoTemplate.findAndModify(Query.query(Criteria.where("id").is(ID)), Update.update("name",name),Tag.class);
+    public Tag updateNameById(String id, String newName){
+        // 返回旧的
+//        return mongoTemplate.findAndModify(Query.query(Criteria.where("id").is(id)), Update.update("name",newName),Tag.class);
+        // 返回新的
+        return mongoTemplate.findAndModify(Query.query(Criteria.where("id").is(id)), Update.update("name",newName),new FindAndModifyOptions().returnNew(true),Tag.class);
     }
 
+    /**
+     * 找到某个问题对应的所有标签
+     * @param questionID 问题ID
+     * @return 标签列表
+     */
     @Override
     public List<Tag> findByQuestionID(String questionID) {
         return tagRepository.findAllByQuestionIdListContains(questionID);

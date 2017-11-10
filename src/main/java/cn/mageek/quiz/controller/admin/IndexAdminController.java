@@ -98,10 +98,10 @@ public class IndexAdminController {
     @ResponseBody
     public String tagUpdate(@RequestBody Tag tag, Model model){
         logger.debug("tag:{}",tag.toString());
-        Tag newTag = tagService.updateNameById(tag.getId(),tag.getName());//返回的是修改前的 所以是 oldTag才对
+        Tag newTag = tagService.updateNameById(tag.getId(),tag.getName());
         if(newTag != null) {
-            logger.debug("newTag:{}",newTag.toString());
-            if(!newTag.getName().equals(tag.getName())){
+            logger.debug("oldTag:{}",newTag.toString());
+            if(newTag.getName().equals(tag.getName())){
                 return "修改成功";
             }else{
                 return "修改失败";
