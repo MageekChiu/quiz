@@ -34,7 +34,6 @@ public class UserDeatilsServiceMongoImpl implements UserDetailsService {
         logger.debug("username:{}",username);
 
         if( user == null ){
-            logger.debug("nulllllllllllllllllll");
             throw new UsernameNotFoundException(String.format("User with username=%s was not found", username));
         }else{
             logger.debug("class:{},user:{}",user.getClass(),user.toString());

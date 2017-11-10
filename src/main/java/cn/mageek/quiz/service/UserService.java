@@ -8,9 +8,14 @@ import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface UserService  {
-    List<User> getUserListByRole(String role);
+    List<User> getUserList();
 
     User findByUsername(String username);
 
     User save(User user);
+
+    User editKeyVlue(String userID,String key,String value);
+
+    User delete(String userID);
+
 }

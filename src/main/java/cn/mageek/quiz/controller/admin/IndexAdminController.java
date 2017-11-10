@@ -2,6 +2,7 @@ package cn.mageek.quiz.controller.admin;
 
 import cn.mageek.quiz.entity.Question;
 import cn.mageek.quiz.entity.Tag;
+import cn.mageek.quiz.entity.User;
 import cn.mageek.quiz.service.PaperService;
 import cn.mageek.quiz.service.QuestionService;
 import cn.mageek.quiz.service.TagService;
@@ -194,16 +195,56 @@ public class IndexAdminController {
 
     /**
      * 展示用户列表
-     * @param name
      * @param model
      * @return
      */
     @RequestMapping(value = {"/user"})
-    public String userList(@RequestParam(name = "tag",defaultValue = "脑筋急转弯") String name,
-                           Model model){
-        model.addAttribute("message","message from controller,hello "+name);
-        return "admin/index";
+    public String userList( Model model){
+        List<User> userList = userService.getUserList();
+        model.addAttribute("userList",userList);
+        return "admin/userList";
     }
+
+    /**
+     * 修改用户信息
+     * @param userID
+     * @param key
+     * @param value
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/useredit")
+    public String userEdit(@RequestParam String userID,@RequestParam String key,@RequestParam String value){
+        User user = userService.editKeyVlue(userID,key,value);
+        return user==null?"修改失败":"修改成功";
+    }
+
+    /**
+     * 添加用户
+     * @return
+     */
+    @RequestMapping("/useradd")
+    public String userAdd(@RequestParam String username,@RequestParam String password,@RequestParam String password1,@RequestParam String role,Model model){
+        User user = new User();
+        user.setPassword(password);user.setPapers(new LinkedList<>());user.setRole(role);user.setUsername(username);
+        User userSaved = userService.save(user);
+        model.addAttribute("userList",new LinkedList<User>(Arrays.asList(user)));
+        model.addAttribute("msg",userSaved.getRole().equals(user.getRole())?"添加成功":"添加失败");
+        return "admin/userList";
+    }
+
+
+    /**
+     * 删除用户
+     * @return
+     */
+    @RequestMapping("/userdel/{userID}")
+    public String userDel(@PathVariable String userID,RedirectAttributes redirectAttributes){
+        User user = userService.delete(userID);
+        redirectAttributes.addFlashAttribute("msg",user!=null?"删除成功":"删除失败");
+        return "redirect:/admin/user";
+    }
+
 
     /**
      * 展示用户对应的试卷列表
