@@ -207,10 +207,10 @@ public class IndexAdminController {
 
     /**
      * 修改用户信息
-     * @param userID
-     * @param key
-     * @param value
-     * @return
+     * @param userID 用户ID
+     * @param key 属性名
+     * @param value 属性值
+     * @return view
      */
     @ResponseBody
     @RequestMapping("/useredit")

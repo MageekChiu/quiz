@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Mageek Chiu
+ */
 @Service("userService")
 public class UserServiceMongoImpl implements UserService {
 
