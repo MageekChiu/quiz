@@ -256,7 +256,7 @@ public class IndexAdminController {
     public String paperList(@RequestParam(name = "tag",defaultValue = "脑筋急转弯") String name,
                            Model model){
         model.addAttribute("message","message from controller,hello "+name);
-        return "admin/index";
+        return "admin/paperList";
     }
 
     @GetMapping(value="/edit")
